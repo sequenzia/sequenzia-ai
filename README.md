@@ -1,1 +1,1 @@
-# sequenzia-ai
+# Sequenzia AI
