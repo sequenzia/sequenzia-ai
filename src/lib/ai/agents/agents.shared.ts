@@ -17,7 +17,7 @@ export const defaultAgentMeta: AgentMetadata = {
   id: "default",
   name: "Sequenzia",
   description: "Default AI Agent with interactive content generation",
-  greeting: "Ask me anything — I can help with code, charts, forms, and more!",
+  greeting: "I can create forms, charts, code, and more. What would you like to build?",
   suggestions: [
     {
       label: "Create a feedback form",
@@ -45,7 +45,7 @@ export const coderAgentMeta: AgentMetadata = {
   id: "coder",
   name: "Coding Agent",
   description: "Specialized Coding Agent",
-  greeting: "Ready to code! Ask me to write functions, classes, or debug your code.",
+  greeting: "Let's write some code together. What are you working on?",
   suggestions: [
     {
       label: "React data fetching hook",
@@ -74,7 +74,7 @@ export const portfolioAgentMeta: AgentMetadata = {
   id: "portfolio",
   name: "Portfolio Agent",
   description: "Interactive Portfolio Agent",
-  greeting: "Welcome! Explore my bio, projects, skills, and experience.",
+  greeting: "Let's chat — ask me anything about my work, background, or projects.",
   suggestions: [
     {
       label: "Bio",

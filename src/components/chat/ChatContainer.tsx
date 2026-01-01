@@ -74,13 +74,16 @@ export function ChatContainer({ className }: ChatContainerProps) {
               <MessageSquare className="size-16" />
             </div>
             <div className="space-y-2 text-center">
-              <h3 className="font-semibold text-xl">✨ Start a conversation</h3>
+              <h3 className="font-semibold text-xl">✨ Let's chat</h3>
               <p className="text-muted-foreground">
                 {agentMetadata?.greeting ?? "Ask me anything!"}
               </p>
             </div>
             {suggestions && suggestions.length > 0 && (
               <div className="mt-8 w-full max-w-xl px-4">
+                <p className="text-muted-foreground/60 text-sm text-center mb-3">
+                  Quick starts — or ask me anything
+                </p>
                 <Suggestions>
                   {suggestions.map((suggestion) => (
                     <Suggestion
