@@ -24,4 +24,10 @@ Supported languages for syntax highlighting include: javascript, typescript, pyt
     generateCode,
   },
   maxSteps: 1,
+  suggestions: [
+    "Write a React hook for fetching data",
+    "Create a TypeScript utility function",
+    "Show me a Python class example",
+    "Generate an Express.js route handler",
+  ],
 };

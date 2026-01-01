@@ -11,7 +11,7 @@ export const generateForm = tool({
   description:
     "Generate an interactive form for collecting user input. Use for surveys, registrations, feedback forms, or any structured data collection.",
   inputSchema: z.object({
-    type: z.literal("form"),
+    type: z.literal("form").describe('Must always be exactly "form"'),
     title: z.string().describe("The form title"),
     description: z.string().optional().describe("Optional description"),
     fields: z.array(FormFieldSchema).describe("Array of form fields"),

@@ -18,4 +18,7 @@ export interface AgentConfig {
 
   /** Optional description for documentation */
   description?: string;
+
+  /** Optional suggestion prompts for quick actions */
+  suggestions?: string[];
 }

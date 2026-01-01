@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { CheckIcon } from "lucide-react";
 import { useChat } from "./ChatProvider";
+import { Suggestions, Suggestion } from "@/components/ai-elements/suggestion";
 import { MODELS, getChefs, getModelById } from "@/lib/ai/models";
 import {
   PromptInput,
@@ -29,10 +30,28 @@ import {
 import { Button } from "@/components/ui/button";
 
 export function InputComposer() {
-  const { sendMessage, status, modelId, setModelId, stop, isLoading } =
-    useChat();
+  const {
+    sendMessage,
+    status,
+    modelId,
+    setModelId,
+    stop,
+    isLoading,
+    messages,
+    suggestions,
+  } = useChat();
   const [input, setInput] = useState("");
   const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
+
+  const handleSuggestionClick = useCallback(
+    (suggestion: string) => {
+      sendMessage(suggestion);
+    },
+    [sendMessage]
+  );
+
+  const showSuggestions =
+    suggestions && suggestions.length > 0 && messages.length > 0;
 
   const selectedModelData = getModelById(modelId);
   const chefs = getChefs();
@@ -52,6 +71,19 @@ export function InputComposer() {
   return (
     <div className="border-t bg-background p-4">
       <div className="max-w-3xl mx-auto">
+        {showSuggestions && (
+          <div className="mb-3">
+            <Suggestions>
+              {suggestions.map((suggestion) => (
+                <Suggestion
+                  key={suggestion}
+                  suggestion={suggestion}
+                  onClick={handleSuggestionClick}
+                />
+              ))}
+            </Suggestions>
+          </div>
+        )}
         <PromptInput onSubmit={handleSubmit}>
           <PromptInputBody>
             <PromptInputTextarea

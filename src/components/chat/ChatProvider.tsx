@@ -23,15 +23,17 @@ interface ChatContextValue {
   stop: () => void;
   modelId: string;
   setModelId: (modelId: string) => void;
+  suggestions?: string[];
 }
 
 const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 
 interface ChatProviderProps {
   children: React.ReactNode;
+  suggestions?: string[];
 }
 
-export function ChatProvider({ children }: ChatProviderProps) {
+export function ChatProvider({ children, suggestions }: ChatProviderProps) {
   const [modelId, setModelId] = useState<string>(DEFAULT_MODEL_ID);
 
   const {
@@ -91,6 +93,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
       stop,
       modelId,
       setModelId,
+      suggestions,
     }),
     [
       messages,
@@ -102,6 +105,7 @@ export function ChatProvider({ children }: ChatProviderProps) {
       clearMessages,
       stop,
       modelId,
+      suggestions,
     ]
   );
 

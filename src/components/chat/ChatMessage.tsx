@@ -15,7 +15,7 @@ import {
   ReasoningContent,
   ReasoningTrigger,
 } from "@/components/ai-elements/reasoning";
-import { Tool, ToolHeader } from "@/components/ai-elements/tool";
+import { Tool, ToolHeader, ToolContent, ToolOutput } from "@/components/ai-elements/tool";
 import type { ToolUIPart } from "ai";
 import { ContentBlock } from "@/components/blocks/ContentBlock";
 import { useChat } from "./ChatProvider";
@@ -91,6 +91,8 @@ export const ChatMessage = memo(function ChatMessage({
                     output?: unknown;
                   };
 
+                  const fullToolPart = part as ToolUIPart;
+
                   // Check if this is one of our content block tools
                   if (
                     [
@@ -112,7 +114,7 @@ export const ChatMessage = memo(function ChatMessage({
                         />
                       );
                     }
-                    // Show loading state for in-progress tools
+                    // Show error or loading state for tools
                     return (
                       <Tool key={key}>
                         <ToolHeader
@@ -120,6 +122,14 @@ export const ChatMessage = memo(function ChatMessage({
                           type={part.type as ToolUIPart["type"]}
                           state={toolPart.state as ToolUIPart["state"]}
                         />
+                        {toolPart.state === "output-error" && (
+                          <ToolContent>
+                            <ToolOutput
+                              output={fullToolPart.output}
+                              errorText={fullToolPart.errorText}
+                            />
+                          </ToolContent>
+                        )}
                       </Tool>
                     );
                   }

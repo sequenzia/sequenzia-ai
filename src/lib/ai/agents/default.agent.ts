@@ -26,4 +26,10 @@ Guidelines for tools:
 
   tools: chatTools,
   maxSteps: 1,
+  suggestions: [
+    "Create a feedback form for my website",
+    "Show me a bar chart example",
+    "Generate a TypeScript function",
+    "Create a product card with image",
+  ],
 };
