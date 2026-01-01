@@ -124,7 +124,7 @@ export type PortfolioViewType = z.infer<typeof PortfolioViewTypeSchema>;
 // Portfolio content data (tool output schema)
 export const PortfolioContentDataSchema = z.object({
   type: z.literal("portfolio").describe('Must always be exactly "portfolio"'),
-  viewType: PortfolioViewTypeSchema.describe("The portfolio section to display"),
+  viewType: PortfolioViewTypeSchema.describe("The portfolio section to display, must be exactly one of 'bio', 'experience', 'projects', 'education', 'skills', 'contact'"),
   filter: z.string().optional().describe("Optional filter for content (e.g., 'ai' for AI projects)"),
   highlightId: z.string().optional().describe("ID of specific item to highlight (e.g., 'proj-1', 'exp-2')"),
 });

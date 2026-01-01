@@ -69,8 +69,11 @@ export const AgentSelectorEmpty = (props: AgentSelectorEmptyProps) => (
 
 export type AgentSelectorItemProps = ComponentProps<typeof CommandItem>;
 
-export const AgentSelectorItem = (props: AgentSelectorItemProps) => (
-  <CommandItem {...props} />
+export const AgentSelectorItem = ({
+  className,
+  ...props
+}: AgentSelectorItemProps) => (
+  <CommandItem className={cn("group", className)} {...props} />
 );
 
 export type AgentSelectorNameProps = ComponentProps<"span">;
@@ -89,7 +92,11 @@ export const AgentSelectorDescription = ({
   ...props
 }: AgentSelectorDescriptionProps) => (
   <span
-    className={cn("text-muted-foreground text-xs truncate", className)}
+    className={cn(
+      "text-muted-foreground text-xs truncate",
+      "group-data-[selected=true]:text-accent-foreground/80",
+      className
+    )}
     {...props}
   />
 );

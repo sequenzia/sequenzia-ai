@@ -59,7 +59,7 @@ export const MODELS: Model[] = [
   },
 ];
 
-export const DEFAULT_MODEL_ID = "openai/gpt-oss-120b";
+export const DEFAULT_MODEL_ID = "openai/gpt-4o-mini";
 
 export function getModelById(id: string): Model | undefined {
   return MODELS.find((model) => model.id === id);

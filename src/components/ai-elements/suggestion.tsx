@@ -20,6 +20,16 @@ export function Suggestions({ className, children, ...props }: SuggestionsProps)
 // Get emoji prefix based on suggestion content
 function getSuggestionEmoji(text: string): string {
   const lowerText = text.toLowerCase();
+
+  // Portfolio-specific suggestions
+  if (lowerText.includes("bio") || lowerText.includes("about me")) return "👤";
+  if (lowerText.includes("experience") || lowerText.includes("work history")) return "💼";
+  if (lowerText.includes("project")) return "🚀";
+  if (lowerText.includes("education") || lowerText.includes("degree")) return "🎓";
+  if (lowerText.includes("skill")) return "⚡";
+  if (lowerText.includes("contact") || lowerText.includes("email") || lowerText.includes("reach")) return "📧";
+
+  // General suggestions
   if (lowerText.includes("code") || lowerText.includes("function") || lowerText.includes("build")) return "💻";
   if (lowerText.includes("chart") || lowerText.includes("graph") || lowerText.includes("visualiz")) return "📊";
   if (lowerText.includes("form") || lowerText.includes("input") || lowerText.includes("survey")) return "📝";

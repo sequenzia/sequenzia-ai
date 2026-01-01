@@ -79,23 +79,23 @@ export const portfolioAgentMeta: AgentMetadata = {
     },
     {
       label: "Experience",
-      prompt: "Show me your work experience",
+      prompt: "Show me your experience",
     },
     {
       label: "Projects",
-      prompt: "Tell me about the projects you've worked on",
+      prompt: "Show me your projects",
     },
     {
       label: "Education",
-      prompt: "Tell me about your education",
+      prompt: "Show me your education",
     },
     {
       label: "Skills",
-      prompt: "Tell me about your technical skills",
+      prompt: "Show me your skills",
     },
     {
       label: "Contact",
-      prompt: "How can I get in touch?",
+      prompt: "Show me your contact information",
     },
   ],
 };
