@@ -11,7 +11,8 @@ Sequenzia AI implements the **Inline Content Paradigm** - a design philosophy th
 - **Streaming Chat** - Real-time AI responses with token-by-token streaming
 - **Multi-Model Support** - Switch between OpenAI, Google, and DeepSeek models
 - **Agent System** - Configurable agents with custom prompts, tools, and suggestions
-- **Interactive Blocks** - AI-generated forms, charts, code, and cards inline in messages
+- **Interactive Blocks** - AI-generated forms, charts, code, cards, and portfolio content inline in messages
+- **Portfolio Mode** - Interactive portfolio agent for showcasing professional experience
 - **Quick Suggestions** - Agent-defined suggestion buttons for common actions
 - **Reasoning Display** - Collapsible thinking/reasoning sections for supported models
 - **Dark/Light Themes** - System-aware theming with manual toggle
@@ -20,7 +21,7 @@ Sequenzia AI implements the **Inline Content Paradigm** - a design philosophy th
 
 ## Content Blocks
 
-The AI can generate four types of interactive content:
+The AI can generate five types of interactive content:
 
 | Block | Description | Use Cases |
 |-------|-------------|-----------|
@@ -28,6 +29,7 @@ The AI can generate four types of interactive content:
 | **Chart** | Data visualizations (line, bar, pie, area) | Reports, analytics, comparisons |
 | **Code** | Syntax-highlighted code with copy button | Examples, configurations, snippets |
 | **Card** | Rich content with media and actions | Products, articles, notifications |
+| **Portfolio** | Professional portfolio sections | Bio, experience, projects, skills, education, contact |
 
 See [docs/blocks.md](docs/blocks.md) for detailed documentation.
 
@@ -108,6 +110,7 @@ src/
 │   └── page.tsx               # Main chat page
 ├── components/
 │   ├── ai-elements/           # Custom AI UI components
+│   │   ├── agent-selector.tsx # Agent picker dialog
 │   │   ├── conversation.tsx   # Conversation container
 │   │   ├── message.tsx        # Message + attachments + branching
 │   │   ├── model-selector.tsx # Model picker dialog
@@ -120,7 +123,9 @@ src/
 │   │   ├── FormContent.tsx    # Dynamic forms
 │   │   ├── ChartContent.tsx   # Recharts visualizations
 │   │   ├── CodeContent.tsx    # Shiki syntax highlighting
-│   │   └── CardContent.tsx    # Rich cards with actions
+│   │   ├── CardContent.tsx    # Rich cards with actions
+│   │   ├── PortfolioBlock.tsx # Portfolio section renderer
+│   │   └── portfolio/         # Portfolio sub-components
 │   ├── chat/                  # Chat components
 │   │   ├── ChatProvider.tsx   # useChat wrapper + model state
 │   │   ├── ChatContainer.tsx  # Message list with auto-scroll
@@ -131,14 +136,20 @@ src/
 ├── lib/
 │   ├── ai/
 │   │   ├── agents/            # Agent configurations
-│   │   │   ├── index.ts       # Registry + getActiveAgent()
-│   │   │   ├── types.ts       # AgentConfig interface
+│   │   │   ├── agents.shared.ts  # Shared metadata (client-safe)
+│   │   │   ├── index.ts          # Registry + getActiveAgent()
+│   │   │   ├── types.ts          # AgentConfig interface
 │   │   │   ├── default.agent.ts
-│   │   │   └── coder.agent.ts
+│   │   │   ├── coder.agent.ts
+│   │   │   └── portfolio.agent.ts
+│   │   ├── agents.client.ts   # Client-safe agent re-exports
 │   │   ├── models.ts          # Client-safe model definitions
 │   │   ├── models.server.ts   # Server-only AI Gateway factory
-│   │   └── tools.ts           # Tool definitions (form, chart, code, card)
-│   └── motion/                # Animation variants + hooks
+│   │   └── tools.ts           # Tool definitions (form, chart, code, card, portfolio)
+│   ├── motion/                # Animation variants + hooks
+│   └── portfolio/             # Portfolio data system
+│       ├── data.ts            # Portfolio content data
+│       └── types.ts           # Portfolio TypeScript interfaces
 └── types/
     └── message.ts             # ContentBlock types + Zod schemas
 ```
@@ -153,33 +164,57 @@ Agents organize system prompts, available tools, and UI suggestions. One agent i
 |-------|-------------|-------|
 | `default` | Full assistant with interactive content | form, chart, code, card |
 | `coder` | Code-focused assistant | code |
+| `portfolio` | Interactive portfolio showcase | renderPortfolio |
 
-### Agent Configuration
+### Agent Architecture
+
+Agents are split between client-safe metadata and server-only configuration:
+
+- **`agents.shared.ts`** - Client-safe metadata (id, name, description, greeting, suggestions)
+- **`agents.client.ts`** - Re-exports shared metadata for client components
+- **`*.agent.ts`** - Server-only full config with instructions and tools
 
 ```typescript
+// Client-safe metadata (can be imported anywhere)
+interface AgentMetadata {
+  id: string;
+  name: string;
+  description?: string;
+  greeting?: string;    // Welcome message for empty state
+  suggestions?: Array<{ label: string; prompt?: string }>;
+}
+
+// Server-only config (includes system prompt and tools)
 interface AgentConfig {
-  id: string;           // Matches ACTIVE_AGENT env var
-  name: string;         // Human-readable name
+  id: string;
+  name: string;
   instructions: string; // System prompt
-  tools: ToolSet;       // Available tools
-  maxSteps?: number;    // Multi-step iterations
+  tools: ToolSet;
+  maxSteps?: number;
+  description?: string;
   suggestions?: Array<{ label: string; prompt?: string }>;
 }
 ```
 
 ### Creating a New Agent
 
-1. Create `src/lib/ai/agents/myagent.agent.ts`
-2. Define agent config with id, name, instructions, tools, and suggestions
-3. Register in `src/lib/ai/agents/index.ts`
+1. Add metadata to `src/lib/ai/agents/agents.shared.ts` (AGENTS array + export)
+2. Create `src/lib/ai/agents/myagent.agent.ts` with full config
+3. Register in `src/lib/ai/agents/index.ts` agents record
 4. Set `ACTIVE_AGENT=myagent` in `.env.local`
+
+### Portfolio Agent
+
+The portfolio agent showcases professional experience through an interactive chat interface. Portfolio data is defined in `src/lib/portfolio/data.ts` and the system prompt is auto-generated from this data.
+
+Portfolio sections: bio, experience, projects, education, skills, contact
 
 ## Environment Variables
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
 | `AI_GATEWAY_API_KEY` | Vercel AI Gateway API key | Yes | - |
-| `ACTIVE_AGENT` | Active agent ID | No | `default` |
+| `ACTIVE_AGENT` | Active agent ID (`default`, `coder`, `portfolio`) | No | `default` |
 
 ## Architecture
 
@@ -201,10 +236,12 @@ Messages contain parts that render differently:
 
 Content blocks are generated through AI tools:
 
-1. AI calls a tool (e.g., `generateChart`)
+1. AI calls a tool (e.g., `generateChart`, `renderPortfolio`)
 2. Tool input is validated against Zod schema
 3. Tool output flows through streaming response
 4. `ContentBlock` router renders appropriate component
+
+Available tools: `generateForm`, `generateChart`, `generateCode`, `generateCard`, `renderPortfolio`
 
 ## Documentation
 
