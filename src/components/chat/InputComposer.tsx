@@ -87,7 +87,7 @@ export function InputComposer() {
 
   return (
     <div className="border-t bg-background p-4">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto">
         {showSuggestions && (
           <div className="mb-3">
             <Suggestions>
@@ -227,9 +227,6 @@ export function InputComposer() {
             />
           </PromptInputFooter>
         </PromptInput>
-        <p className="text-xs text-muted-foreground text-center mt-2">
-          Press Enter to send, Shift+Enter for new line
-        </p>
       </div>
     </div>
   );

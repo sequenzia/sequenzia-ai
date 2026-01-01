@@ -65,7 +65,7 @@ export function ChatContainer({ className }: ChatContainerProps) {
 
   return (
     <Conversation className={cn("flex-1", className)}>
-      <ConversationContent className="max-w-3xl mx-auto px-4 py-6">
+      <ConversationContent className="max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-6">
         {visibleMessages.length === 0 ? (
           <ConversationEmptyState>
             <div className="text-muted-foreground">
