@@ -6,6 +6,7 @@ import { FormContent } from "./FormContent";
 import { ChartContent } from "./ChartContent";
 import { CodeContent } from "./CodeContent";
 import { CardContent } from "./CardContent";
+import { PortfolioBlock } from "./PortfolioBlock";
 import { fadeInUp } from "@/lib/motion";
 
 interface ContentBlockProps {
@@ -24,6 +25,8 @@ export function ContentBlock({ content, messageId }: ContentBlockProps) {
         return <CodeContent data={content} />;
       case "card":
         return <CardContent data={content} />;
+      case "portfolio":
+        return <PortfolioBlock data={content} />;
       default:
         return null;
     }

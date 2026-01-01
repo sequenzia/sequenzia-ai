@@ -100,6 +100,7 @@ export const ChatMessage = memo(function ChatMessage({
                       "generateChart",
                       "generateCode",
                       "generateCard",
+                      "renderPortfolio",
                     ].includes(toolName)
                   ) {
                     if (

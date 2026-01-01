@@ -3,11 +3,13 @@ import "server-only";
 import type { AgentConfig } from "./types";
 import { defaultAgent } from "./default.agent";
 import { coderAgent } from "./coder.agent";
+import { portfolioAgent } from "./portfolio.agent";
 
 // Registry of all available agents
 const agents: Record<string, AgentConfig> = {
   [defaultAgent.id]: defaultAgent,
   [coderAgent.id]: coderAgent,
+  [portfolioAgent.id]: portfolioAgent,
 };
 
 // Default fallback agent ID

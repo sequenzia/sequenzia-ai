@@ -109,12 +109,35 @@ export const CardContentDataSchema = z.object({
 
 export type CardContentData = z.infer<typeof CardContentDataSchema>;
 
+// Portfolio view type enum
+export const PortfolioViewTypeSchema = z.enum([
+  "bio",
+  "experience",
+  "projects",
+  "education",
+  "skills",
+  "contact",
+]);
+
+export type PortfolioViewType = z.infer<typeof PortfolioViewTypeSchema>;
+
+// Portfolio content data (tool output schema)
+export const PortfolioContentDataSchema = z.object({
+  type: z.literal("portfolio").describe('Must always be exactly "portfolio"'),
+  viewType: PortfolioViewTypeSchema.describe("The portfolio section to display"),
+  filter: z.string().optional().describe("Optional filter for content (e.g., 'ai' for AI projects)"),
+  highlightId: z.string().optional().describe("ID of specific item to highlight (e.g., 'proj-1', 'exp-2')"),
+});
+
+export type PortfolioContentData = z.infer<typeof PortfolioContentDataSchema>;
+
 // Union of all content block types
 export type ContentBlock =
   | FormContentData
   | ChartContentData
   | CodeContentData
-  | CardContentData;
+  | CardContentData
+  | PortfolioContentData;
 
 // Content block schema (discriminated union)
 export const ContentBlockSchema = z.discriminatedUnion("type", [
@@ -122,4 +145,5 @@ export const ContentBlockSchema = z.discriminatedUnion("type", [
   ChartContentDataSchema,
   CodeContentDataSchema,
   CardContentDataSchema,
+  PortfolioContentDataSchema,
 ]);
