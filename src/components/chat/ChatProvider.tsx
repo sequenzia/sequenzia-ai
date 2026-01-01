@@ -30,6 +30,8 @@ interface ChatContextValue {
   agentId: string;
   setAgentId: (agentId: string) => void;
   agentSelectorEnabled: boolean;
+  agentSelectorOpen: boolean;
+  setAgentSelectorOpen: (open: boolean) => void;
   suggestions?: Array<{ label: string; prompt?: string }>;
 }
 
@@ -52,6 +54,7 @@ export function ChatProvider({
   const [agentId, setAgentId] = useState<string>(
     initialAgentId ?? DEFAULT_AGENT_ID
   );
+  const [agentSelectorOpen, setAgentSelectorOpen] = useState(false);
 
   // Derive suggestions from selected agent when selector is enabled
   const suggestions = useMemo(() => {
@@ -122,6 +125,8 @@ export function ChatProvider({
       agentId,
       setAgentId,
       agentSelectorEnabled,
+      agentSelectorOpen,
+      setAgentSelectorOpen,
       suggestions,
     }),
     [
@@ -136,6 +141,7 @@ export function ChatProvider({
       modelId,
       agentId,
       agentSelectorEnabled,
+      agentSelectorOpen,
       suggestions,
     ]
   );

@@ -50,6 +50,8 @@ export function InputComposer() {
     agentId,
     setAgentId,
     agentSelectorEnabled,
+    agentSelectorOpen,
+    setAgentSelectorOpen,
     stop,
     isLoading,
     messages,
@@ -57,7 +59,6 @@ export function InputComposer() {
   } = useChat();
   const [input, setInput] = useState("");
   const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
-  const [agentSelectorOpen, setAgentSelectorOpen] = useState(false);
 
   const handleSuggestionClick = useCallback(
     (prompt: string) => {

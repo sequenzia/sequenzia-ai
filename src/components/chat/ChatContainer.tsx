@@ -2,7 +2,7 @@
 
 import { useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Bot as BotIcon } from "lucide-react";
 import { useChat } from "./ChatProvider";
 import { ChatMessage } from "./ChatMessage";
 import {
@@ -22,7 +22,7 @@ interface ChatContainerProps {
 }
 
 export function ChatContainer({ className }: ChatContainerProps) {
-  const { messages, status, suggestions, sendMessage, agentId } = useChat();
+  const { messages, status, suggestions, sendMessage, agentId, agentSelectorEnabled, setAgentSelectorOpen } = useChat();
   const agentMetadata = getAgentMetadataById(agentId);
 
   const handleSuggestionClick = useCallback(
@@ -79,6 +79,17 @@ export function ChatContainer({ className }: ChatContainerProps) {
                 {agentMetadata?.greeting ?? "Ask me anything!"}
               </p>
             </div>
+            {agentSelectorEnabled && agentMetadata && (
+              <button
+                onClick={() => setAgentSelectorOpen(true)}
+                className="flex items-center gap-2 px-3 py-2 rounded-full bg-muted/50 border border-border/50 text-sm hover:bg-muted/80 transition-colors cursor-pointer"
+              >
+                <BotIcon className="size-4 text-accent" />
+                <span className="text-muted-foreground">
+                  Chatting with <span className="font-medium text-foreground">{agentMetadata.name}</span>
+                </span>
+              </button>
+            )}
             {suggestions && suggestions.length > 0 && (
               <div className="mt-8 w-full max-w-xl px-4">
                 <p className="text-muted-foreground/60 text-sm text-center mb-3">
