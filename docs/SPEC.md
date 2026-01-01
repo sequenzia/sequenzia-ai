@@ -15,7 +15,7 @@ The core innovation lies in how interactive content is presented: rather than re
 | **Target Platform**   | Web (Desktop and Mobile Responsive) |
 | **Primary Framework** | Next.js 16 with React 19            |
 | **AI Integration**    | Vercel AI SDK v6 with AI Gateway    |
-| **UI Components**     | Vercel AI Elements + shadcn/ui      |
+| **UI Components**     | Custom AI Elements + shadcn/ui      |
 | **Deployment**        | Vercel Platform                     |
 
 ---
@@ -50,11 +50,12 @@ The Inline Content Paradigm eliminates this disconnect by treating every AI resp
 | ---------------- | ------------------------------ | ------------------------------------------------- |
 | Framework        | Next.js 16.1                   | Full-stack React framework with App Router        |
 | UI Core          | React 19.2                     | Component architecture and state management       |
-| AI Components    | Vercel AI Elements             | Pre-built chat UI (Conversation, Message, etc.)   |
+| AI Components    | Custom AI Elements             | Chat UI components (Message, ModelSelector, etc.) |
 | UI Primitives    | shadcn/ui (New York style)     | Accessible component primitives via Radix UI      |
 | Styling          | Tailwind CSS v4                | Utility-first styling with OKLch color system     |
 | Animation        | Framer Motion / Motion         | Spring-based animations and gesture feedback      |
 | Validation       | Zod v4                         | Schema validation for AI tool inputs              |
+| Markdown         | Streamdown                     | Streaming markdown renderer                       |
 | State            | React Context + AI SDK hooks   | Chat state via useChat, theme via ThemeProvider   |
 | Server Cache     | TanStack Query                 | Infrastructure for server state caching           |
 | AI Integration   | Vercel AI SDK v6               | Streaming, tool calls, and UI generation          |
@@ -67,7 +68,7 @@ The application follows a layered architecture that separates concerns while ena
 
 #### 3.2.1 Presentation Layer
 
-The presentation layer consists of React components built on Vercel AI Elements and shadcn/ui. The primary components include a ChatContainer that manages the conversation viewport with sticky scroll, ChatMessage components that render message parts (text, reasoning, tool outputs), and specialized ContentBlock components for each type of interactive element.
+The presentation layer consists of React components built on custom AI Elements and shadcn/ui. The primary components include a ChatContainer that manages the conversation viewport with sticky scroll, ChatMessage components that render message parts (text, reasoning, tool outputs), and specialized ContentBlock components for each type of interactive element.
 
 #### 3.2.2 State Management Layer
 
@@ -75,7 +76,7 @@ The Vercel AI SDK's `useChat` hook manages chat state including messages, stream
 
 #### 3.2.3 AI Integration Layer
 
-The Vercel AI SDK v6 provides the bridge between the frontend and AI models. This layer handles streaming responses via Server-Sent Events, tool call orchestration through Zod-validated schemas, and the structured output parsing required to render generated UI components. The AI Gateway enables model routing across multiple providers.
+The Vercel AI SDK v6 provides the bridge between the frontend and AI models. This layer handles streaming responses via Server-Sent Events, tool call orchestration through Zod-validated schemas, and the structured output parsing required to render generated UI components. The AI Gateway enables model routing across multiple providers. The Agent system organizes prompts, tools, and suggestions.
 
 ---
 
@@ -83,25 +84,51 @@ The Vercel AI SDK v6 provides the bridge between the frontend and AI models. Thi
 
 ### 4.1 Conversational Interface
 
-The foundation of the application is a streaming chat interface that supports real-time AI responses. Users can send text messages and receive responses that stream in token by token. The interface supports markdown rendering, code syntax highlighting via Shiki, and reasoning/thinking display.
+The foundation of the application is a streaming chat interface that supports real-time AI responses. Users can send text messages and receive responses that stream in token by token. The interface supports markdown rendering via Streamdown, code syntax highlighting via Shiki, and reasoning/thinking display.
 
-### 4.2 Model Selection
+### 4.2 Agent System
+
+Agents organize system prompts, available tools, and UI suggestions. One agent is active at a time, selected via the `ACTIVE_AGENT` environment variable.
+
+| Agent     | Description                           | Tools                      |
+| --------- | ------------------------------------- | -------------------------- |
+| `default` | Full assistant with interactive content | form, chart, code, card   |
+| `coder`   | Code-focused assistant                | code                       |
+
+**Agent Configuration:**
+
+```typescript
+interface AgentConfig {
+  id: string;           // Matches ACTIVE_AGENT env var
+  name: string;         // Human-readable name
+  instructions: string; // System prompt
+  tools: ToolSet;       // Available tools
+  maxSteps?: number;    // Multi-step iterations (default: 1)
+  description?: string; // Optional description
+  suggestions?: Array<{
+    label: string;      // Short label for UI
+    prompt?: string;    // Full prompt (defaults to label)
+  }>;
+}
+```
+
+### 4.3 Model Selection
 
 Users can select from multiple AI models during conversation:
 
 | Provider  | Models                                    |
 | --------- | ----------------------------------------- |
-| OpenAI    | GPT-5 Nano, GPT-5 Mini, GPT-4o Mini       |
+| OpenAI    | GPT-5 Nano, GPT-5 Mini, GPT-4o Mini, GPT-OSS 120B |
 | Google    | Gemini 2.0 Flash                          |
 | DeepSeek  | DeepSeek V3.2                             |
 
-Model selection persists in the ChatProvider context and is passed with each request. The model selector appears in the input composer, grouped by provider.
+Model selection persists in the ChatProvider context and is passed with each request. The model selector appears in the input composer via a command palette dialog, grouped by provider.
 
-### 4.3 Interactive UI Generation
+### 4.4 Interactive UI Generation
 
 The AI can generate several categories of interactive elements that render inline within messages.
 
-#### 4.3.1 Forms and Inputs
+#### 4.4.1 Forms and Inputs
 
 Dynamic forms with field validation and styled input components. Form submissions generate new messages in the conversation, maintaining cause-and-effect clarity. Supported input types:
 
@@ -115,7 +142,7 @@ Dynamic forms with field validation and styled input components. Form submission
 
 Forms display a success state with animated checkmark after submission.
 
-#### 4.3.2 Data Visualizations
+#### 4.4.2 Data Visualizations
 
 Charts rendered via Recharts with interactive tooltips. Supported visualization types:
 
@@ -126,7 +153,7 @@ Charts rendered via Recharts with interactive tooltips. Supported visualization 
 
 Charts render at fixed height (300px) with responsive width and theme-aware colors using CSS custom properties (`--chart-1` through `--chart-5`).
 
-#### 4.3.3 Code Blocks
+#### 4.4.3 Code Blocks
 
 Syntax-highlighted code blocks using Shiki with dual-theme support (light and dark HTML pre-rendered). Features include:
 
@@ -135,7 +162,7 @@ Syntax-highlighted code blocks using Shiki with dual-theme support (light and da
 - Copy-to-clipboard functionality
 - Code statistics (line count, character count)
 
-#### 4.3.4 Rich Content Cards
+#### 4.4.4 Rich Content Cards
 
 Content cards for displaying structured information with optional media. Features:
 
@@ -146,7 +173,11 @@ Content cards for displaying structured information with optional media. Feature
 
 Card actions trigger new messages in the conversation when clicked.
 
-### 4.4 Reasoning Display
+### 4.5 Quick Suggestions
+
+Agents can define suggestion prompts that appear as buttons in the input area when the conversation is empty. Clicking a suggestion sends its associated prompt to the AI.
+
+### 4.6 Reasoning Display
 
 When AI models provide reasoning/thinking content, it renders in a collapsible Reasoning component:
 
@@ -172,13 +203,13 @@ The application uses a single-column centered layout optimized for readability:
 
 #### 5.2.1 User Messages
 
-User messages slide in from the right with a subtle animation. They display text content and support the AI SDK's UIMessage parts structure.
+User messages slide in from the right with a subtle animation. They display text content and support file attachments via the AI SDK's UIMessage parts structure.
 
 #### 5.2.2 Assistant Messages
 
 Assistant messages slide in from the left. Each assistant message can contain multiple parts:
 
-- **Text parts:** Rendered via MessageResponse component
+- **Text parts:** Rendered via MessageResponse component (using Streamdown)
 - **Reasoning parts:** Collapsible thinking display
 - **Tool parts:** Either ContentBlock (for form/chart/code/card) or generic Tool component
 
@@ -191,8 +222,9 @@ Assistant messages include action buttons:
 The input area includes:
 
 - Multi-line text input with auto-resize
-- Model selector dropdown (grouped by provider with logos)
+- Model selector (command palette dialog with search, grouped by provider)
 - Submit button with loading state
+- Quick suggestion buttons (when conversation is empty)
 - Keyboard hints (Enter to send, Shift+Enter for newline)
 
 ### 5.4 Animation Specifications
@@ -263,13 +295,13 @@ Messages are filtered to hide empty assistant messages during initial streaming,
 | _ChartContent_   | Recharts wrapper with responsive container and theme colors                  |
 | _CodeContent_    | Shiki syntax highlighting with dual-theme support and copy button            |
 | _CardContent_    | Card display with media, actions, and click handling                         |
-| _InputComposer_  | Text input with model selector and keyboard handling                         |
+| _InputComposer_  | Text input with model selector, suggestions, and keyboard handling           |
 | _Reasoning_      | Collapsible reasoning/thinking display with streaming support                |
 | _Tool_           | Generic tool invocation display with status badges                           |
 
 ### 7.2 AI Elements Components
 
-Pre-built components from Vercel AI Elements registry:
+Custom components in `src/components/ai-elements/`:
 
 | Component              | Purpose                                    |
 | ---------------------- | ------------------------------------------ |
@@ -279,14 +311,19 @@ Pre-built components from Vercel AI Elements registry:
 | ConversationScrollButton | Sticky scroll-to-bottom control          |
 | Message                | Role-aware message wrapper                 |
 | MessageContent         | Message body container                     |
-| MessageResponse        | Text content renderer                      |
+| MessageResponse        | Text content renderer (Streamdown)         |
 | MessageActions         | Action button container                    |
+| MessageAttachment      | File attachment display                    |
+| MessageBranch*         | Response branching components              |
 | PromptInput            | Input composition wrapper                  |
 | PromptInputTextarea    | Auto-resizing text input                   |
-| ModelSelector          | Model selection dropdown                   |
+| ModelSelector*         | Model selection dialog (cmdk-based)        |
+| Suggestion(s)          | Quick action buttons                       |
 | CodeBlock              | Syntax highlighting with Shiki             |
 | Tool                   | Tool invocation display                    |
 | Loader                 | Spinning loading indicator                 |
+| Shimmer                | Skeleton loading animation                 |
+| Reasoning              | Collapsible thinking display               |
 
 ### 7.3 State Management Strategy
 
@@ -337,6 +374,7 @@ interface UIMessage {
   parts?: Array<
     | { type: 'text'; text: string }
     | { type: 'reasoning'; text: string }
+    | { type: 'file'; filename?: string; mediaType?: string; url?: string }
     | { type: `tool-${string}`; state: ToolState; output?: unknown; errorText?: string }
   >;
 }
@@ -441,9 +479,27 @@ interface CardContentData {
 interface Model {
   id: string;           // e.g., "openai/gpt-5-nano"
   name: string;         // e.g., "GPT-5 Nano"
-  provider: string;     // e.g., "OpenAI"
-  providerSlug: string; // e.g., "openai"
+  chef: string;         // e.g., "OpenAI"
+  chefSlug: string;     // e.g., "openai"
+  providers: string[];  // e.g., ["openai", "azure"]
   description?: string;
+}
+```
+
+### 8.4 Agent Definition
+
+```typescript
+interface AgentConfig {
+  id: string;
+  name: string;
+  instructions: string;
+  tools: ToolSet;
+  maxSteps?: number;
+  description?: string;
+  suggestions?: Array<{
+    label: string;
+    prompt?: string;
+  }>;
 }
 ```
 
@@ -474,12 +530,14 @@ export async function POST(req: Request) {
 
   const model = createModel(modelId);
   const messages = await convertToModelMessages(uiMessages);
+  const agent = getActiveAgent();
 
   const result = streamText({
     model,
-    system: getSystemPrompt(),
+    system: agent.instructions,
     messages,
-    tools: chatTools,
+    tools: agent.tools,
+    stopWhen: stepCountIs(agent.maxSteps ?? 1),
   });
 
   return result.toUIMessageStreamResponse({
@@ -533,21 +591,20 @@ export function createModel(modelId?: string): LanguageModel {
 }
 ```
 
-### 9.4 System Prompt
+### 9.4 Agent System
+
+Agents are defined in `src/lib/ai/agents/` and registered in the agents index:
 
 ```typescript
-export function getSystemPrompt(): string {
-  return `You are Sequenzia, a helpful AI assistant with the ability to create interactive content.
+// lib/ai/agents/index.ts
+const agents: Record<string, AgentConfig> = {
+  [defaultAgent.id]: defaultAgent,
+  [coderAgent.id]: coderAgent,
+};
 
-When appropriate, you can generate:
-- **Forms**: For collecting user input (surveys, registrations, feedback)
-- **Charts**: For visualizing data (line, bar, pie, area charts)
-- **Code**: For displaying code snippets with syntax highlighting
-- **Cards**: For presenting structured information with optional media
-
-Use these tools when they would enhance the conversation. For simple text responses, just reply normally.
-
-Be helpful, concise, and friendly. When generating interactive content, make it practical and useful.`;
+export function getActiveAgent(): AgentConfig {
+  const agentId = process.env.ACTIVE_AGENT || "default";
+  return agents[agentId] ?? agents["default"];
 }
 ```
 
@@ -796,6 +853,8 @@ When `prefers-reduced-motion: reduce` is enabled:
 
 ## Appendix A: Glossary
 
+**Agent:** A configuration combining system prompt, available tools, and optional UI suggestions for the AI assistant.
+
 **Content Block:** Structured data representing interactive elements the AI can generate within messages (form, chart, code, card).
 
 **Tool Call:** An AI-initiated function invocation that generates structured output rendered as a ContentBlock.
@@ -810,7 +869,7 @@ When `prefers-reduced-motion: reduce` is enabled:
 
 **Spring Animation:** Physics-based animation using stiffness and damping parameters for natural motion.
 
-**AI Elements:** Vercel's component library for building AI chat interfaces, distributed via shadcn registry.
+**Streamdown:** A streaming markdown renderer that handles incremental content updates.
 
 ---
 
@@ -825,3 +884,4 @@ The following features from the original spec vision are not yet implemented but
 5. **File Attachments:** User file upload support in messages
 6. **Conversation Persistence:** Server-side conversation storage
 7. **Voice Input:** Speech-to-text message input
+8. **Multi-Agent Switching:** Runtime agent selection via UI

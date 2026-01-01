@@ -25,6 +25,15 @@ When the AI decides to create a block, it calls a tool (e.g., `generateChart`). 
 
 Blocks appear within assistant messages via the parts-based rendering system in `ChatMessage.tsx`. When a tool part has `state: "output-available"`, the output is rendered as a `ContentBlock`.
 
+### Agent Integration
+
+Tools are organized into agents (`src/lib/ai/agents/`). Each agent defines which tools are available:
+
+- **default agent**: All tools (form, chart, code, card)
+- **coder agent**: Only the code tool
+
+Set `ACTIVE_AGENT` environment variable to select an agent.
+
 ---
 
 ## Block Types
@@ -408,6 +417,25 @@ if (
 }
 ```
 
+### 6. Add to Agent (Optional)
+
+If you want the tool available to specific agents, update the agent configuration in `src/lib/ai/agents/`:
+
+```typescript
+// In your agent file
+import { generateMyBlock } from "../tools";
+
+export const myAgent: AgentConfig = {
+  id: "myagent",
+  name: "My Agent",
+  instructions: "...",
+  tools: {
+    generateMyBlock,
+    // ... other tools
+  },
+};
+```
+
 ---
 
 ## Styling
@@ -431,3 +459,4 @@ Charts use CSS variables for colors (`--color-chart-1` through `--color-chart-5`
 4. **Animate thoughtfully** - Use subtle animations that don't distract
 5. **Support themes** - Use CSS variables for colors, not hardcoded values
 6. **Make accessible** - Include labels, ARIA attributes, and keyboard support
+7. **Consider agent scope** - Only include tools relevant to the agent's purpose

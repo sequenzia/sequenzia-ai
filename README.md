@@ -10,7 +10,9 @@ Sequenzia AI implements the **Inline Content Paradigm** - a design philosophy th
 
 - **Streaming Chat** - Real-time AI responses with token-by-token streaming
 - **Multi-Model Support** - Switch between OpenAI, Google, and DeepSeek models
+- **Agent System** - Configurable agents with custom prompts, tools, and suggestions
 - **Interactive Blocks** - AI-generated forms, charts, code, and cards inline in messages
+- **Quick Suggestions** - Agent-defined suggestion buttons for common actions
 - **Reasoning Display** - Collapsible thinking/reasoning sections for supported models
 - **Dark/Light Themes** - System-aware theming with manual toggle
 - **Markdown Rendering** - Full markdown support with syntax highlighting
@@ -35,10 +37,11 @@ See [docs/blocks.md](docs/blocks.md) for detailed documentation.
 |-------|------------|
 | Framework | Next.js 16.1 + React 19.2 |
 | AI | Vercel AI SDK v6 + AI Gateway |
-| UI | Vercel AI Elements + shadcn/ui |
+| UI | Custom AI Elements + shadcn/ui |
 | Styling | Tailwind CSS v4 (OKLch colors) |
 | Animation | Framer Motion / Motion |
 | Validation | Zod v4 |
+| Markdown | Streamdown |
 | Charts | Recharts |
 | Syntax Highlighting | Shiki |
 
@@ -74,6 +77,7 @@ cp .env.example .env.local
 
 ```
 AI_GATEWAY_API_KEY=your_key_here
+ACTIVE_AGENT=default
 ```
 
 5. Start the development server:
@@ -103,7 +107,14 @@ src/
 │   ├── layout.tsx             # Root layout with providers
 │   └── page.tsx               # Main chat page
 ├── components/
-│   ├── ai-elements/           # AI Elements (conversation, message, etc.)
+│   ├── ai-elements/           # Custom AI UI components
+│   │   ├── conversation.tsx   # Conversation container
+│   │   ├── message.tsx        # Message + attachments + branching
+│   │   ├── model-selector.tsx # Model picker dialog
+│   │   ├── suggestion.tsx     # Quick action suggestions
+│   │   ├── prompt-input.tsx   # Message input field
+│   │   ├── reasoning.tsx      # Collapsible reasoning display
+│   │   └── ...
 │   ├── blocks/                # Content block renderers
 │   │   ├── ContentBlock.tsx   # Block type router
 │   │   ├── FormContent.tsx    # Dynamic forms
@@ -114,32 +125,68 @@ src/
 │   │   ├── ChatProvider.tsx   # useChat wrapper + model state
 │   │   ├── ChatContainer.tsx  # Message list with auto-scroll
 │   │   ├── ChatMessage.tsx    # Parts-based message rendering
-│   │   └── InputComposer.tsx  # Input + model selector
+│   │   └── InputComposer.tsx  # Input + model selector + suggestions
 │   ├── providers/             # React context providers
 │   └── ui/                    # shadcn/ui components
 ├── lib/
 │   ├── ai/
+│   │   ├── agents/            # Agent configurations
+│   │   │   ├── index.ts       # Registry + getActiveAgent()
+│   │   │   ├── types.ts       # AgentConfig interface
+│   │   │   ├── default.agent.ts
+│   │   │   └── coder.agent.ts
 │   │   ├── models.ts          # Client-safe model definitions
 │   │   ├── models.server.ts   # Server-only AI Gateway factory
-│   │   ├── tools.ts           # Tool definitions for blocks
-│   │   └── prompts.ts         # System prompt
-│   └── motion/                # Animation variants
+│   │   └── tools.ts           # Tool definitions for blocks
+│   └── motion/                # Animation variants + hooks
 └── types/
     └── message.ts             # ContentBlock types + Zod schemas
 ```
 
+## Agents
+
+Agents organize system prompts, available tools, and UI suggestions. One agent is active at a time, selected via the `ACTIVE_AGENT` environment variable.
+
+### Available Agents
+
+| Agent | Description | Tools |
+|-------|-------------|-------|
+| `default` | Full assistant with interactive content | form, chart, code, card |
+| `coder` | Code-focused assistant | code |
+
+### Agent Configuration
+
+```typescript
+interface AgentConfig {
+  id: string;           // Matches ACTIVE_AGENT env var
+  name: string;         // Human-readable name
+  instructions: string; // System prompt
+  tools: ToolSet;       // Available tools
+  maxSteps?: number;    // Multi-step iterations
+  suggestions?: Array<{ label: string; prompt?: string }>;
+}
+```
+
+### Creating a New Agent
+
+1. Create `src/lib/ai/agents/myagent.agent.ts`
+2. Define agent config with id, name, instructions, tools, and suggestions
+3. Register in `src/lib/ai/agents/index.ts`
+4. Set `ACTIVE_AGENT=myagent` in `.env.local`
+
 ## Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `AI_GATEWAY_API_KEY` | Vercel AI Gateway API key | Yes |
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `AI_GATEWAY_API_KEY` | Vercel AI Gateway API key | Yes | - |
+| `ACTIVE_AGENT` | Active agent ID | No | `default` |
 
 ## Architecture
 
 ### Message Flow
 
 ```
-User Input → API Route → AI Model → Streaming Response → Message Parts → UI
+User Input → API Route → Agent Config → AI Model → Streaming Response → Message Parts → UI
 ```
 
 ### Parts-Based Rendering
