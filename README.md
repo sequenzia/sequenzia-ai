@@ -137,7 +137,7 @@ src/
 │   │   │   └── coder.agent.ts
 │   │   ├── models.ts          # Client-safe model definitions
 │   │   ├── models.server.ts   # Server-only AI Gateway factory
-│   │   └── tools.ts           # Tool definitions for blocks
+│   │   └── tools.ts           # Tool definitions (form, chart, code, card)
 │   └── motion/                # Animation variants + hooks
 └── types/
     └── message.ts             # ContentBlock types + Zod schemas

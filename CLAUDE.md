@@ -72,8 +72,7 @@ src/
 │   │   │   └── coder.agent.ts    # Code-focused agent
 │   │   ├── models.ts          # Client-safe model definitions
 │   │   ├── models.server.ts   # Server-only AI Gateway factory
-│   │   ├── tools.ts           # Tool definitions (form, chart, code, card)
-│   │   └── prompts.ts         # System prompt (legacy)
+│   │   └── tools.ts           # Tool definitions (form, chart, code, card)
 │   ├── motion/                # Animation variants + hooks
 │   │   ├── variants.ts        # Framer Motion variants
 │   │   ├── hooks.ts           # Animation hooks
