@@ -1,29 +1,41 @@
 "use client";
 
 import { useState } from "react";
+import { CheckIcon } from "lucide-react";
 import { useChat } from "./ChatProvider";
-import { MODELS, getModelsByProvider } from "@/lib/ai/models";
+import { MODELS, getChefs, getModelById } from "@/lib/ai/models";
 import {
   PromptInput,
   PromptInputBody,
   PromptInputTextarea,
   PromptInputFooter,
   PromptInputTools,
-  PromptInputSelect,
-  PromptInputSelectTrigger,
-  PromptInputSelectValue,
-  PromptInputSelectContent,
-  PromptInputSelectItem,
   PromptInputSubmit,
   type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
-import { Separator } from "@/components/ui/separator";
+import {
+  ModelSelector,
+  ModelSelectorTrigger,
+  ModelSelectorContent,
+  ModelSelectorInput,
+  ModelSelectorList,
+  ModelSelectorEmpty,
+  ModelSelectorGroup,
+  ModelSelectorItem,
+  ModelSelectorLogo,
+  ModelSelectorLogoGroup,
+  ModelSelectorName,
+} from "@/components/ai-elements/model-selector";
+import { Button } from "@/components/ui/button";
 
 export function InputComposer() {
   const { sendMessage, status, modelId, setModelId, stop, isLoading } =
     useChat();
   const [input, setInput] = useState("");
-  const modelsByProvider = getModelsByProvider();
+  const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
+
+  const selectedModelData = getModelById(modelId);
+  const chefs = getChefs();
 
   const handleSubmit = (message: PromptInputMessage) => {
     if (!message.text?.trim()) return;
@@ -51,31 +63,64 @@ export function InputComposer() {
           </PromptInputBody>
           <PromptInputFooter>
             <PromptInputTools>
-              <PromptInputSelect value={modelId} onValueChange={setModelId}>
-                <PromptInputSelectTrigger className="w-[180px] h-8">
-                  <PromptInputSelectValue />
-                </PromptInputSelectTrigger>
-                <PromptInputSelectContent>
-                  {Array.from(modelsByProvider.entries()).map(
-                    ([provider, models], providerIndex) => (
-                      <div key={provider}>
-                        {providerIndex > 0 && <Separator className="my-1" />}
-                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
-                          {provider}
-                        </div>
-                        {models.map((model) => (
-                          <PromptInputSelectItem
-                            key={model.id}
-                            value={model.id}
-                          >
-                            {model.name}
-                          </PromptInputSelectItem>
-                        ))}
-                      </div>
-                    )
-                  )}
-                </PromptInputSelectContent>
-              </PromptInputSelect>
+              <ModelSelector
+                open={modelSelectorOpen}
+                onOpenChange={setModelSelectorOpen}
+              >
+                <ModelSelectorTrigger asChild>
+                  <Button
+                    className="h-8 gap-2 justify-start"
+                    variant="outline"
+                    size="sm"
+                  >
+                    {selectedModelData?.chefSlug && (
+                      <ModelSelectorLogo provider={selectedModelData.chefSlug} />
+                    )}
+                    <ModelSelectorName className="max-w-[140px]">
+                      {selectedModelData?.name ?? "Select model"}
+                    </ModelSelectorName>
+                  </Button>
+                </ModelSelectorTrigger>
+                <ModelSelectorContent>
+                  <ModelSelectorInput placeholder="Search models..." />
+                  <ModelSelectorList>
+                    <ModelSelectorEmpty>No models found.</ModelSelectorEmpty>
+                    {chefs.map((chef) => (
+                      <ModelSelectorGroup key={chef} heading={chef}>
+                        {MODELS.filter((model) => model.chef === chef).map(
+                          (model) => (
+                            <ModelSelectorItem
+                              key={model.id}
+                              value={model.id}
+                              onSelect={() => {
+                                setModelId(model.id);
+                                setModelSelectorOpen(false);
+                              }}
+                              className="flex items-center gap-2"
+                            >
+                              <ModelSelectorLogo provider={model.chefSlug} />
+                              <ModelSelectorName>{model.name}</ModelSelectorName>
+                              <ModelSelectorLogoGroup className="ml-auto">
+                                {model.providers.map((provider) => (
+                                  <ModelSelectorLogo
+                                    key={provider}
+                                    provider={provider}
+                                  />
+                                ))}
+                              </ModelSelectorLogoGroup>
+                              {modelId === model.id ? (
+                                <CheckIcon className="size-4 shrink-0" />
+                              ) : (
+                                <div className="size-4 shrink-0" />
+                              )}
+                            </ModelSelectorItem>
+                          )
+                        )}
+                      </ModelSelectorGroup>
+                    ))}
+                  </ModelSelectorList>
+                </ModelSelectorContent>
+              </ModelSelector>
             </PromptInputTools>
             <PromptInputSubmit
               status={status}
