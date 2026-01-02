@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { CheckIcon, BotIcon } from "lucide-react";
 import { useChat } from "./ChatProvider";
-import { Suggestions, Suggestion } from "@/components/ai-elements/suggestion";
+import { SuggestionsHoverCard } from "@/components/ai-elements/suggestion";
 import { MODELS, getChefs, getModelById } from "@/lib/ai/models";
 import { AGENTS, getAgentMetadataById } from "@/lib/ai/agents.client";
 import {
@@ -66,8 +66,6 @@ export function InputComposer() {
     [sendMessage]
   );
 
-  const showSuggestions = suggestions && suggestions.length > 0;
-
   const selectedModelData = getModelById(modelId);
   const selectedAgentData = getAgentMetadataById(agentId);
   const chefs = getChefs();
@@ -87,21 +85,6 @@ export function InputComposer() {
   return (
     <div className="bg-gradient-to-t from-background via-background to-transparent p-4 pb-6">
       <div className="max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto">
-        {showSuggestions && (
-          <div className="mb-4">
-            <Suggestions>
-              {suggestions.map((suggestion) => (
-                <Suggestion
-                  key={suggestion.label}
-                  suggestion={suggestion.prompt ?? suggestion.label}
-                  onClick={handleSuggestionClick}
-                >
-                  {suggestion.label}
-                </Suggestion>
-              ))}
-            </Suggestions>
-          </div>
-        )}
         {/* Gradient border wrapper */}
         <div className="relative rounded-2xl p-[1px] bg-gradient-to-r from-gradient-from via-accent to-gradient-to shadow-lg shadow-accent/10">
           <div className="rounded-2xl bg-card/95 backdrop-blur-sm">
@@ -116,6 +99,10 @@ export function InputComposer() {
               </PromptInputBody>
               <PromptInputFooter>
                 <PromptInputTools>
+                  <SuggestionsHoverCard
+                    suggestions={suggestions ?? []}
+                    onSuggestionClick={handleSuggestionClick}
+                  />
                   {agentSelectorEnabled && (
                     <AgentSelector
                       open={agentSelectorOpen}

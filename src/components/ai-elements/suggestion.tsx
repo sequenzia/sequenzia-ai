@@ -1,8 +1,14 @@
 "use client";
 
-import type { ComponentProps } from "react";
+import { useState, type ComponentProps } from "react";
+import { LightbulbIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  PromptInputHoverCard,
+  PromptInputHoverCardTrigger,
+  PromptInputHoverCardContent,
+} from "@/components/ai-elements/prompt-input";
 
 export type SuggestionsProps = ComponentProps<"div">;
 
@@ -75,5 +81,69 @@ export function Suggestion({
       <span className="mr-1.5">{emoji}</span>
       {children || suggestion}
     </Button>
+  );
+}
+
+export type SuggestionsHoverCardProps = {
+  suggestions: Array<{ label: string; prompt?: string }>;
+  onSuggestionClick: (prompt: string) => void;
+  className?: string;
+};
+
+export function SuggestionsHoverCard({
+  suggestions,
+  onSuggestionClick,
+  className,
+}: SuggestionsHoverCardProps) {
+  const [open, setOpen] = useState(false);
+
+  const handleClick = (prompt: string) => {
+    setOpen(false);
+    onSuggestionClick(prompt);
+  };
+
+  if (!suggestions?.length) return null;
+
+  return (
+    <PromptInputHoverCard
+      open={open}
+      onOpenChange={setOpen}
+      openDelay={200}
+      closeDelay={100}
+    >
+      <PromptInputHoverCardTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn("h-8 gap-2", className)}
+          type="button"
+        >
+          <LightbulbIcon className="size-4" />
+          <span className="sr-only md:not-sr-only">Suggestions</span>
+        </Button>
+      </PromptInputHoverCardTrigger>
+      <PromptInputHoverCardContent
+        side="top"
+        align="start"
+        className="w-auto max-w-md p-3"
+      >
+        <div className="space-y-2">
+          <h4 className="text-sm font-medium text-muted-foreground">
+            Quick prompts
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {suggestions.map((s) => (
+              <Suggestion
+                key={s.label}
+                suggestion={s.prompt ?? s.label}
+                onClick={handleClick}
+              >
+                {s.label}
+              </Suggestion>
+            ))}
+          </div>
+        </div>
+      </PromptInputHoverCardContent>
+    </PromptInputHoverCard>
   );
 }
