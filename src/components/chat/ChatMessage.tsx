@@ -169,6 +169,18 @@ export const ChatMessage = memo(function ChatMessage({
             </MessageAction>
           </MessageActions>
         )}
+
+        {isUser && (
+          <MessageActions className="ml-auto">
+            <MessageAction
+              onClick={() => handleCopy(getAllText())}
+              label="Copy"
+              tooltip="Copy message"
+            >
+              <CopyIcon className="size-3" />
+            </MessageAction>
+          </MessageActions>
+        )}
       </Message>
     </motion.div>
   );
