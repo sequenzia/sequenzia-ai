@@ -42,7 +42,7 @@ export function EmptyState() {
         </div>
 
         {/* Input composer */}
-        <InputComposer />
+        <InputComposer hideAgentSelector />
       </div>
     </div>
   );

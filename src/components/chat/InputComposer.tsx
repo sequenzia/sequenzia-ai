@@ -41,7 +41,11 @@ import {
 } from '@/components/ai-elements/agent-selector';
 import { Button } from '@/components/ui/button';
 
-export function InputComposer() {
+interface InputComposerProps {
+  hideAgentSelector?: boolean;
+}
+
+export function InputComposer({ hideAgentSelector }: InputComposerProps = {}) {
   const {
     sendMessage,
     status,
@@ -101,14 +105,16 @@ export function InputComposer() {
                 <PromptInputTools>
                   {agentSelectorEnabled && (
                     <AgentSelector open={agentSelectorOpen} onOpenChange={setAgentSelectorOpen}>
-                      <AgentSelectorTrigger asChild>
-                        <Button className="h-8 gap-2 justify-start" variant="outline" size="sm">
-                          <BotIcon className="size-4" />
-                          <AgentSelectorName className="max-w-[120px]">
-                            {selectedAgentData?.name ?? 'Select agent'}
-                          </AgentSelectorName>
-                        </Button>
-                      </AgentSelectorTrigger>
+                      {!hideAgentSelector && (
+                        <AgentSelectorTrigger asChild>
+                          <Button className="h-8 gap-2 justify-start" variant="outline" size="sm">
+                            <BotIcon className="size-4" />
+                            <AgentSelectorName className="max-w-[120px]">
+                              {selectedAgentData?.name ?? 'Select agent'}
+                            </AgentSelectorName>
+                          </Button>
+                        </AgentSelectorTrigger>
+                      )}
                       <AgentSelectorContent>
                         <AgentSelectorInput placeholder="Search agents..." />
                         <AgentSelectorList>
