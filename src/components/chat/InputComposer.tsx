@@ -86,7 +86,7 @@ export function InputComposer() {
 
   return (
     <div className="bg-gradient-to-t from-background via-background to-transparent p-4 pb-6">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto">
         {showSuggestions && (
           <div className="mb-4">
             <Suggestions>
