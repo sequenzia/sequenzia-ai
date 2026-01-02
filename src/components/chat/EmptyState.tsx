@@ -13,7 +13,7 @@ export function EmptyState() {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Scrollable content area */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 overflow-y-auto">
+      <div className="flex-1 flex flex-col items-center justify-start pt-[24vh] md:pt-[26vh] p-6 overflow-y-auto">
         <div className="w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl space-y-4">
           {/* Empty state content */}
           <div className="flex flex-col items-center gap-3 text-center">
