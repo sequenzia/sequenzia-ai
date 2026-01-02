@@ -21,7 +21,7 @@ export const defaultAgentMeta: AgentMetadata = {
     "I can create forms, charts, code, search the web, and more. What would you like to do?",
   suggestions: [
     {
-      label: "Create a feedback form",
+      label: "Create a form",
       prompt:
         "Create a feedback form for my website with fields for name, email, rating, and comments.",
     },
@@ -34,9 +34,9 @@ export const defaultAgentMeta: AgentMetadata = {
       prompt: "Search for the latest news about artificial intelligence.",
     },
     {
-      label: "Generate TypeScript code",
+      label: "Generate Python code",
       prompt:
-        "Generate a TypeScript utility function that debounces function calls.",
+        "Generate a Python decorator that retries a function with exponential backoff.",
     },
   ],
 };

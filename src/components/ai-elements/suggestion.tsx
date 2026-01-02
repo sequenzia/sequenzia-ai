@@ -1,7 +1,22 @@
 "use client";
 
-import { useState, type ComponentProps } from "react";
-import { LightbulbIcon } from "lucide-react";
+import { useState, type ComponentProps, type ReactNode } from "react";
+import {
+  LightbulbIcon,
+  UserIcon,
+  BriefcaseIcon,
+  RocketIcon,
+  GraduationCapIcon,
+  ZapIcon,
+  MailIcon,
+  CodeIcon,
+  BarChartIcon,
+  FileTextIcon,
+  PenLineIcon,
+  SearchIcon,
+  SparklesIcon,
+  GlobeIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -23,26 +38,42 @@ export function Suggestions({ className, children, ...props }: SuggestionsProps)
   );
 }
 
-// Get emoji prefix based on suggestion content
-function getSuggestionEmoji(text: string): string {
+// Get icon based on suggestion content
+function getSuggestionIcon(text: string): ReactNode {
   const lowerText = text.toLowerCase();
+  const iconClass = "size-4 text-accent";
 
   // Portfolio-specific suggestions
-  if (lowerText.includes("bio") || lowerText.includes("about me")) return "👤";
-  if (lowerText.includes("experience") || lowerText.includes("work history")) return "💼";
-  if (lowerText.includes("project")) return "🚀";
-  if (lowerText.includes("education") || lowerText.includes("degree")) return "🎓";
-  if (lowerText.includes("skill")) return "⚡";
-  if (lowerText.includes("contact") || lowerText.includes("email") || lowerText.includes("reach")) return "📧";
+  if (lowerText.includes("bio") || lowerText.includes("about me"))
+    return <UserIcon className={iconClass} />;
+  if (lowerText.includes("experience") || lowerText.includes("work history"))
+    return <BriefcaseIcon className={iconClass} />;
+  if (lowerText.includes("project"))
+    return <RocketIcon className={iconClass} />;
+  if (lowerText.includes("education") || lowerText.includes("degree"))
+    return <GraduationCapIcon className={iconClass} />;
+  if (lowerText.includes("skill"))
+    return <ZapIcon className={iconClass} />;
+  if (lowerText.includes("contact") || lowerText.includes("email") || lowerText.includes("reach"))
+    return <MailIcon className={iconClass} />;
 
   // General suggestions
-  if (lowerText.includes("code") || lowerText.includes("function") || lowerText.includes("build")) return "💻";
-  if (lowerText.includes("chart") || lowerText.includes("graph") || lowerText.includes("visualiz")) return "📊";
-  if (lowerText.includes("form") || lowerText.includes("input") || lowerText.includes("survey")) return "📝";
-  if (lowerText.includes("help") || lowerText.includes("explain") || lowerText.includes("how")) return "💡";
-  if (lowerText.includes("write") || lowerText.includes("create") || lowerText.includes("generate")) return "✍️";
-  if (lowerText.includes("analyze") || lowerText.includes("review") || lowerText.includes("check")) return "🔍";
-  return "✨";
+  if (lowerText.includes("web") || lowerText.includes("search") || lowerText.includes("internet") || lowerText.includes("news") || lowerText.includes("latest"))
+    return <GlobeIcon className={iconClass} />;
+  if (lowerText.includes("code") || lowerText.includes("function") || lowerText.includes("build"))
+    return <CodeIcon className={iconClass} />;
+  if (lowerText.includes("chart") || lowerText.includes("graph") || lowerText.includes("visualiz"))
+    return <BarChartIcon className={iconClass} />;
+  if (lowerText.includes("form") || lowerText.includes("input") || lowerText.includes("survey"))
+    return <FileTextIcon className={iconClass} />;
+  if (lowerText.includes("help") || lowerText.includes("explain") || lowerText.includes("how"))
+    return <LightbulbIcon className={iconClass} />;
+  if (lowerText.includes("write") || lowerText.includes("create") || lowerText.includes("generate"))
+    return <PenLineIcon className={iconClass} />;
+  if (lowerText.includes("analyze") || lowerText.includes("review") || lowerText.includes("check"))
+    return <SearchIcon className={iconClass} />;
+
+  return <SparklesIcon className={iconClass} />;
 }
 
 export type SuggestionProps = Omit<ComponentProps<typeof Button>, "onClick"> & {
@@ -63,7 +94,7 @@ export function Suggestion({
     onClick?.(suggestion);
   };
 
-  const emoji = getSuggestionEmoji(suggestion);
+  const icon = getSuggestionIcon(suggestion);
 
   return (
     <Button
@@ -78,7 +109,7 @@ export function Suggestion({
       variant={variant}
       {...props}
     >
-      <span className="mr-1.5">{emoji}</span>
+      <span className="mr-1.5">{icon}</span>
       {children || suggestion}
     </Button>
   );
@@ -124,24 +155,19 @@ export function SuggestionsHoverCard({
       </PromptInputHoverCardTrigger>
       <PromptInputHoverCardContent
         side="top"
-        align="start"
+        align="center"
         className="w-auto max-w-md p-3"
       >
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium text-muted-foreground">
-            Quick prompts
-          </h4>
-          <div className="flex flex-wrap gap-2">
-            {suggestions.map((s) => (
-              <Suggestion
-                key={s.label}
-                suggestion={s.prompt ?? s.label}
-                onClick={handleClick}
-              >
-                {s.label}
-              </Suggestion>
-            ))}
-          </div>
+        <div className="flex flex-wrap justify-center gap-2">
+          {suggestions.map((s) => (
+            <Suggestion
+              key={s.label}
+              suggestion={s.prompt ?? s.label}
+              onClick={handleClick}
+            >
+              {s.label}
+            </Suggestion>
+          ))}
         </div>
       </PromptInputHoverCardContent>
     </PromptInputHoverCard>

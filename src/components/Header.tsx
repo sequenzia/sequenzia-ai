@@ -41,14 +41,14 @@ export function Header() {
     <header className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center justify-between px-4 max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto">
         <div className="flex items-center gap-2">
-          <Sparkles size={28} />
-          <h1 className="font-semibold text-xl bg-gradient-to-r from-gradient-from to-gradient-to bg-clip-text text-transparent">
+          <Sparkles size={36} />
+          <h1 className="font-semibold text-2xl bg-gradient-to-r from-gradient-from to-gradient-to bg-clip-text text-transparent">
             Sequenzia AI
           </h1>
         </div>
 
         <div className="flex items-center gap-1">
-          {hasMessages ? (
+          {hasMessages && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
@@ -75,16 +75,6 @@ export function Header() {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={clearMessages}
-              className="hover:bg-accent/20 hover:text-accent"
-            >
-              <SquarePen className="size-5" />
-              <span className="sr-only">New chat</span>
-            </Button>
           )}
 
           <DropdownMenu>
