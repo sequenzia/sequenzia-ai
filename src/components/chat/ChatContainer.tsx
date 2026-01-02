@@ -13,6 +13,7 @@ import {
 } from "@/components/ai-elements/conversation";
 import { Suggestions, Suggestion } from "@/components/ai-elements/suggestion";
 import { Loader } from "@/components/ai-elements/loader";
+import { Sparkles } from "@/components/ai-elements/sparkles";
 import { getAgentMetadataById } from "@/lib/ai/agents.client";
 import { cn } from "@/lib/utils";
 import { fadeInUp } from "@/lib/motion";
@@ -74,7 +75,10 @@ export function ChatContainer({ className }: ChatContainerProps) {
               <MessageSquare className="size-16" />
             </div>
             <div className="space-y-2 text-center">
-              <h3 className="font-semibold text-xl">✨ Let's chat</h3>
+              <h3 className="font-semibold text-xl flex items-center justify-center gap-2">
+                <Sparkles size={20} />
+                <span>Let's chat</span>
+              </h3>
               <p className="text-muted-foreground">
                 {agentMetadata?.greeting ?? "Ask me anything!"}
               </p>
@@ -130,7 +134,8 @@ export function ChatContainer({ className }: ChatContainerProps) {
               className="flex items-center gap-2 text-accent text-sm"
             >
               <Loader size={16} className="text-accent" />
-              <span>✨ Thinking...</span>
+              <Sparkles size={16} />
+              <span>Thinking...</span>
             </motion.div>
           )}
         </AnimatePresence>

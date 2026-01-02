@@ -42,40 +42,40 @@
 }
 
 .dark {
-  --background: oklch(24% 0.015 270);
+  --background: oklch(13.5% 0.02 265);
   --foreground: oklch(98% 0 0);
-  --card: oklch(27% 0.015 270);
+  --card: oklch(19% 0.02 260);
   --card-foreground: oklch(98% 0 0);
-  --popover: oklch(27% 0.015 270);
+  --popover: oklch(19% 0.02 260);
   --popover-foreground: oklch(98% 0 0);
   --primary: oklch(98% 0 0);
-  --primary-foreground: oklch(24% 0 0);
-  --secondary: oklch(30% 0.015 270);
+  --primary-foreground: oklch(13.5% 0 0);
+  --secondary: oklch(22% 0.02 260);
   --secondary-foreground: oklch(98% 0 0);
-  --muted: oklch(30% 0.015 270);
-  --muted-foreground: oklch(65% 0.015 270);
-  --accent: oklch(70% 0.18 285);
+  --muted: oklch(22% 0.02 260);
+  --muted-foreground: oklch(55% 0.02 260);
+  --accent: oklch(65% 0.22 260);
   --accent-foreground: oklch(98% 0 0);
   --destructive: oklch(57.7% 0.245 27.33);
   --destructive-foreground: oklch(98% 0 0);
-  --border: oklch(35% 0.015 270);
-  --input: oklch(35% 0.015 270);
-  --ring: oklch(70% 0.15 285);
-  --gradient-from: oklch(70% 0.18 285);
-  --gradient-to: oklch(65% 0.16 320);
-  --chart-1: oklch(70% 0.22 285);
-  --chart-2: oklch(72% 0.16 195);
+  --border: oklch(28% 0.02 260);
+  --input: oklch(28% 0.02 260);
+  --ring: oklch(65% 0.20 260);
+  --gradient-from: oklch(65% 0.22 260);
+  --gradient-to: oklch(60% 0.30 310);
+  --chart-1: oklch(65% 0.22 260);
+  --chart-2: oklch(60% 0.30 310);
   --chart-3: oklch(70% 0.20 320);
   --chart-4: oklch(78% 0.16 85);
   --chart-5: oklch(75% 0.18 145);
-  --sidebar: oklch(26% 0.015 270);
+  --sidebar: oklch(16% 0.02 262);
   --sidebar-foreground: oklch(98% 0 0);
-  --sidebar-primary: oklch(70% 0.18 285);
+  --sidebar-primary: oklch(65% 0.22 260);
   --sidebar-primary-foreground: oklch(98% 0 0);
-  --sidebar-accent: oklch(30% 0.015 270);
+  --sidebar-accent: oklch(22% 0.02 260);
   --sidebar-accent-foreground: oklch(98% 0 0);
-  --sidebar-border: oklch(35% 0.015 270);
-  --sidebar-ring: oklch(70% 0.15 285);
+  --sidebar-border: oklch(28% 0.02 260);
+  --sidebar-ring: oklch(65% 0.20 260);
 }
 
 @theme inline {
@@ -188,7 +188,7 @@ body {
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: oklch(35% 0 0);
+  background: oklch(28% 0.02 260);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -196,5 +196,5 @@ body {
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: oklch(45% 0 0);
+  background: oklch(35% 0.02 260);
 }

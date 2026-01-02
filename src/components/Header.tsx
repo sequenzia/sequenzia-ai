@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Sun, Moon, Monitor, SquarePen } from "lucide-react";
 import { useChat } from "./chat/ChatProvider";
+import { Sparkles } from "./ai-elements/sparkles";
 import type { Theme } from "@/types";
 
 export function Header() {
@@ -40,7 +41,7 @@ export function Header() {
     <header className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center justify-between px-4 max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto">
         <div className="flex items-center gap-2">
-          <span className="text-xl">✨</span>
+          <Sparkles size={24} />
           <h1 className="font-semibold text-lg bg-gradient-to-r from-gradient-from to-gradient-to bg-clip-text text-transparent">
             Sequenzia AI
           </h1>
