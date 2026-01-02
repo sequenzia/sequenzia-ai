@@ -113,13 +113,13 @@ export function SuggestionsHoverCard({
     >
       <PromptInputHoverCardTrigger asChild>
         <Button
-          variant="outline"
-          size="sm"
-          className={cn("h-8 gap-2", className)}
+          variant="ghost"
+          size="icon"
+          className={cn("size-8", className)}
           type="button"
         >
-          <LightbulbIcon className="size-4" />
-          <span className="sr-only md:not-sr-only">Suggestions</span>
+          <LightbulbIcon className="size-5" />
+          <span className="sr-only">Suggestions</span>
         </Button>
       </PromptInputHoverCardTrigger>
       <PromptInputHoverCardContent

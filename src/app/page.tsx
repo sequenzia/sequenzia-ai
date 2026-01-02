@@ -1,6 +1,5 @@
 import { ChatProvider } from "@/components/chat/ChatProvider";
-import { ChatContainer } from "@/components/chat/ChatContainer";
-import { InputComposer } from "@/components/chat/InputComposer";
+import { ChatLayout } from "@/components/chat/ChatLayout";
 import { Header } from "@/components/Header";
 import { getActiveAgent } from "@/lib/ai/agents";
 import { AGENT_SELECTOR_ON } from "@/config";
@@ -16,8 +15,7 @@ export default function Home() {
     >
       <div className="flex flex-col h-screen bg-background">
         <Header />
-        <ChatContainer className="flex-1 overflow-hidden" />
-        <InputComposer />
+        <ChatLayout />
       </div>
     </ChatProvider>
   );

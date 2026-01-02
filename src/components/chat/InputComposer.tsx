@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useCallback } from "react";
-import { CheckIcon, BotIcon } from "lucide-react";
-import { useChat } from "./ChatProvider";
-import { SuggestionsHoverCard } from "@/components/ai-elements/suggestion";
-import { MODELS, getChefs, getModelById } from "@/lib/ai/models";
-import { AGENTS, getAgentMetadataById } from "@/lib/ai/agents.client";
+import { useState, useCallback } from 'react';
+import { CheckIcon, BotIcon } from 'lucide-react';
+import { useChat } from './ChatProvider';
+import { SuggestionsHoverCard } from '@/components/ai-elements/suggestion';
+import { MODELS, getChefs, getModelById } from '@/lib/ai/models';
+import { AGENTS, getAgentMetadataById } from '@/lib/ai/agents.client';
 import {
   PromptInput,
   PromptInputBody,
@@ -14,7 +14,7 @@ import {
   PromptInputTools,
   PromptInputSubmit,
   type PromptInputMessage,
-} from "@/components/ai-elements/prompt-input";
+} from '@/components/ai-elements/prompt-input';
 import {
   ModelSelector,
   ModelSelectorTrigger,
@@ -27,7 +27,7 @@ import {
   ModelSelectorLogo,
   ModelSelectorLogoGroup,
   ModelSelectorName,
-} from "@/components/ai-elements/model-selector";
+} from '@/components/ai-elements/model-selector';
 import {
   AgentSelector,
   AgentSelectorTrigger,
@@ -38,8 +38,8 @@ import {
   AgentSelectorItem,
   AgentSelectorName,
   AgentSelectorDescription,
-} from "@/components/ai-elements/agent-selector";
-import { Button } from "@/components/ui/button";
+} from '@/components/ai-elements/agent-selector';
+import { Button } from '@/components/ui/button';
 
 export function InputComposer() {
   const {
@@ -56,14 +56,14 @@ export function InputComposer() {
     isLoading,
     suggestions,
   } = useChat();
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
 
   const handleSuggestionClick = useCallback(
     (prompt: string) => {
       sendMessage(prompt);
     },
-    [sendMessage]
+    [sendMessage],
   );
 
   const selectedModelData = getModelById(modelId);
@@ -73,13 +73,13 @@ export function InputComposer() {
   const handleSubmit = (message: PromptInputMessage) => {
     if (!message.text?.trim()) return;
 
-    if (status === "streaming") {
+    if (status === 'streaming') {
       stop();
       return;
     }
 
     sendMessage(message.text);
-    setInput("");
+    setInput('');
   };
 
   return (
@@ -99,24 +99,13 @@ export function InputComposer() {
               </PromptInputBody>
               <PromptInputFooter>
                 <PromptInputTools>
-                  <SuggestionsHoverCard
-                    suggestions={suggestions ?? []}
-                    onSuggestionClick={handleSuggestionClick}
-                  />
                   {agentSelectorEnabled && (
-                    <AgentSelector
-                      open={agentSelectorOpen}
-                      onOpenChange={setAgentSelectorOpen}
-                    >
+                    <AgentSelector open={agentSelectorOpen} onOpenChange={setAgentSelectorOpen}>
                       <AgentSelectorTrigger asChild>
-                        <Button
-                          className="h-8 gap-2 justify-start"
-                          variant="outline"
-                          size="sm"
-                        >
+                        <Button className="h-8 gap-2 justify-start" variant="outline" size="sm">
                           <BotIcon className="size-4" />
                           <AgentSelectorName className="max-w-[120px]">
-                            {selectedAgentData?.name ?? "Select agent"}
+                            {selectedAgentData?.name ?? 'Select agent'}
                           </AgentSelectorName>
                         </Button>
                       </AgentSelectorTrigger>
@@ -151,21 +140,14 @@ export function InputComposer() {
                       </AgentSelectorContent>
                     </AgentSelector>
                   )}
-                  <ModelSelector
-                    open={modelSelectorOpen}
-                    onOpenChange={setModelSelectorOpen}
-                  >
+                  <ModelSelector open={modelSelectorOpen} onOpenChange={setModelSelectorOpen}>
                     <ModelSelectorTrigger asChild>
-                      <Button
-                        className="h-8 gap-2 justify-start"
-                        variant="outline"
-                        size="sm"
-                      >
+                      <Button className="h-8 gap-2 justify-start" variant="outline" size="sm">
                         {selectedModelData?.chefSlug && (
                           <ModelSelectorLogo provider={selectedModelData.chefSlug} />
                         )}
                         <ModelSelectorName className="max-w-[140px]">
-                          {selectedModelData?.name ?? "Select model"}
+                          {selectedModelData?.name ?? 'Select model'}
                         </ModelSelectorName>
                       </Button>
                     </ModelSelectorTrigger>
@@ -175,45 +157,43 @@ export function InputComposer() {
                         <ModelSelectorEmpty>No models found.</ModelSelectorEmpty>
                         {chefs.map((chef) => (
                           <ModelSelectorGroup key={chef} heading={chef}>
-                            {MODELS.filter((model) => model.chef === chef).map(
-                              (model) => (
-                                <ModelSelectorItem
-                                  key={model.id}
-                                  value={model.id}
-                                  onSelect={() => {
-                                    setModelId(model.id);
-                                    setModelSelectorOpen(false);
-                                  }}
-                                  className="flex items-center gap-2"
-                                >
-                                  <ModelSelectorLogo provider={model.chefSlug} />
-                                  <ModelSelectorName>{model.name}</ModelSelectorName>
-                                  <ModelSelectorLogoGroup className="ml-auto">
-                                    {model.providers.map((provider) => (
-                                      <ModelSelectorLogo
-                                        key={provider}
-                                        provider={provider}
-                                      />
-                                    ))}
-                                  </ModelSelectorLogoGroup>
-                                  {modelId === model.id ? (
-                                    <CheckIcon className="size-4 shrink-0" />
-                                  ) : (
-                                    <div className="size-4 shrink-0" />
-                                  )}
-                                </ModelSelectorItem>
-                              )
-                            )}
+                            {MODELS.filter((model) => model.chef === chef).map((model) => (
+                              <ModelSelectorItem
+                                key={model.id}
+                                value={model.id}
+                                onSelect={() => {
+                                  setModelId(model.id);
+                                  setModelSelectorOpen(false);
+                                }}
+                                className="flex items-center gap-2"
+                              >
+                                <ModelSelectorLogo provider={model.chefSlug} />
+                                <ModelSelectorName>{model.name}</ModelSelectorName>
+                                <ModelSelectorLogoGroup className="ml-auto">
+                                  {model.providers.map((provider) => (
+                                    <ModelSelectorLogo key={provider} provider={provider} />
+                                  ))}
+                                </ModelSelectorLogoGroup>
+                                {modelId === model.id ? (
+                                  <CheckIcon className="size-4 shrink-0" />
+                                ) : (
+                                  <div className="size-4 shrink-0" />
+                                )}
+                              </ModelSelectorItem>
+                            ))}
                           </ModelSelectorGroup>
                         ))}
                       </ModelSelectorList>
                     </ModelSelectorContent>
                   </ModelSelector>
                 </PromptInputTools>
-                <PromptInputSubmit
-                  status={status}
-                  disabled={!input.trim() && !isLoading}
-                />
+                <div className="flex items-center gap-1">
+                  <SuggestionsHoverCard
+                    suggestions={suggestions ?? []}
+                    onSuggestionClick={handleSuggestionClick}
+                  />
+                  <PromptInputSubmit status={status} disabled={!input.trim() && !isLoading} />
+                </div>
               </PromptInputFooter>
             </PromptInput>
           </div>

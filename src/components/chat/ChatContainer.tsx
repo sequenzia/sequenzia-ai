@@ -2,18 +2,15 @@
 
 import { useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { MessageSquare, Bot as BotIcon } from "lucide-react";
 import { useChat } from "./ChatProvider";
 import { ChatMessage } from "./ChatMessage";
 import {
   Conversation,
   ConversationContent,
-  ConversationEmptyState,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { Loader } from "@/components/ai-elements/loader";
 import { Sparkles } from "@/components/ai-elements/sparkles";
-import { getAgentMetadataById } from "@/lib/ai/agents.client";
 import { cn } from "@/lib/utils";
 import { fadeInUp } from "@/lib/motion";
 
@@ -22,8 +19,7 @@ interface ChatContainerProps {
 }
 
 export function ChatContainer({ className }: ChatContainerProps) {
-  const { messages, status, agentId, agentSelectorEnabled, setAgentSelectorOpen } = useChat();
-  const agentMetadata = getAgentMetadataById(agentId);
+  const { messages, status } = useChat();
 
   const messageHasContent = (message: (typeof messages)[number]) => {
     return message.parts?.some((part) => {
@@ -61,41 +57,13 @@ export function ChatContainer({ className }: ChatContainerProps) {
   return (
     <Conversation className={cn("flex-1", className)}>
       <ConversationContent className="max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-6">
-        {visibleMessages.length === 0 ? (
-          <ConversationEmptyState>
-            <div className="text-accent">
-              <MessageSquare className="size-16" />
-            </div>
-            <div className="space-y-2 text-center">
-              <h3 className="font-semibold text-xl flex items-center justify-center gap-2">
-                <Sparkles size={20} />
-                <span>Let's chat</span>
-              </h3>
-              <p className="text-muted-foreground">
-                {agentMetadata?.greeting ?? "Ask me anything!"}
-              </p>
-            </div>
-            {agentSelectorEnabled && agentMetadata && (
-              <button
-                onClick={() => setAgentSelectorOpen(true)}
-                className="flex items-center gap-2 px-3 py-2 rounded-full bg-muted/50 border border-border/50 text-sm hover:bg-muted/80 transition-colors cursor-pointer"
-              >
-                <BotIcon className="size-4 text-accent" />
-                <span className="text-muted-foreground">
-                  Chatting with <span className="font-medium text-foreground">{agentMetadata.name}</span>
-                </span>
-              </button>
-            )}
-          </ConversationEmptyState>
-        ) : (
-          visibleMessages.map((message, index) => (
-            <ChatMessage
-              key={message.id}
-              message={message}
-              isLast={index === visibleMessages.length - 1}
-            />
-          ))
-        )}
+        {visibleMessages.map((message, index) => (
+          <ChatMessage
+            key={message.id}
+            message={message}
+            isLast={index === visibleMessages.length - 1}
+          />
+        ))}
 
         <AnimatePresence>
           {showLoading && (
