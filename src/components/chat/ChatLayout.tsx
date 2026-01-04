@@ -29,9 +29,12 @@ export function ChatLayout() {
   }
 
   return (
-    <>
+    <div className="relative flex-1 flex flex-col h-full overflow-hidden">
       <ChatContainer className="flex-1 overflow-hidden" />
-      <InputComposer />
-    </>
+      {/* Floating input with backdrop blur */}
+      <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+        <InputComposer />
+      </div>
+    </div>
   );
 }

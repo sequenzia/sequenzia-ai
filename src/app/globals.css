@@ -3,6 +3,14 @@
 /* Enable class-based dark mode (instead of media query) */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Safe area support for notched devices */
+:root {
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+}
+
 /* Define base CSS variables that can be overridden */
 :root {
   --background: oklch(100% 0 0);
@@ -197,4 +205,41 @@ body {
 
 .dark ::-webkit-scrollbar-thumb:hover {
   background: oklch(35% 0.02 260);
+}
+
+/* Landscape constraints for mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .welcome-landscape-hide {
+    display: none;
+  }
+  .input-landscape-constraint {
+    max-height: 80px !important;
+  }
+  .sidebar-landscape-constraint {
+    max-width: 200px;
+  }
+}
+
+/* Touch optimization */
+button,
+a,
+input,
+textarea,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* Focus ring utilities */
+.no-focus-ring {
+  outline: none;
+}
+.no-focus-ring:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Minimum touch target size (44x44px WCAG 2.5.5) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
 }

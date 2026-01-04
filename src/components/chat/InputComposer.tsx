@@ -89,12 +89,18 @@ export function InputComposer({ hideAgentSelector, hideSuggestions, compact }: I
   };
 
   return (
-    <div className="bg-gradient-to-t from-background via-background to-transparent p-4 pb-6">
+    <div className="p-4 pb-8 pb-[calc(2rem+var(--safe-area-inset-bottom))]">
       <div className={compact ? "max-w-2xl lg:max-w-3xl mx-auto" : "max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto"}>
-        {/* Gradient border wrapper */}
-        <div className="relative rounded-2xl p-[1px] bg-gradient-to-r from-gradient-from via-accent to-gradient-to shadow-lg shadow-accent/10">
-          <div className="rounded-2xl bg-card/95 backdrop-blur-sm">
-            <PromptInput onSubmit={handleSubmit} className="rounded-2xl overflow-hidden">
+        {/* Glassmorphism container */}
+        <div className="relative group pointer-events-auto">
+          {/* Glassmorphism background layer with backdrop blur */}
+          <div className="absolute inset-0 rounded-2xl overflow-hidden">
+            <div className="absolute inset-0 backdrop-blur-xl" />
+            <div className="absolute inset-0 bg-card/80 dark:bg-card/60 border border-border/30 dark:border-border/50 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-200 group-focus-within:shadow-[0_12px_40px_rgba(0,0,0,0.16)] dark:group-focus-within:shadow-[0_12px_40px_rgba(0,0,0,0.5)] group-focus-within:border-border/50 dark:group-focus-within:border-border/70" />
+          </div>
+          {/* Content layer */}
+          <div className="relative">
+            <PromptInput onSubmit={handleSubmit} className="rounded-2xl [&_[data-slot=input-group]]:border-0 [&_[data-slot=input-group]]:rounded-2xl [&_[data-slot=input-group]]:shadow-none">
               <PromptInputBody>
                 <PromptInputTextarea
                   value={input}

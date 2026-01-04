@@ -55,8 +55,13 @@ export function ChatContainer({ className }: ChatContainerProps) {
   }, [status, messages]);
 
   return (
-    <Conversation className={cn("flex-1", className)}>
-      <ConversationContent className="max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-6">
+    <Conversation className={cn("flex-1", className)} data-chat-stream>
+      <ConversationContent className="max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto px-4 py-6 pt-16 pb-48 md:pb-40">
+        {/* Screen reader announcements */}
+        <div aria-live="polite" className="sr-only">
+          {showLoading && "AI is thinking..."}
+        </div>
+
         {visibleMessages.map((message, index) => (
           <ChatMessage
             key={message.id}
@@ -74,6 +79,8 @@ export function ChatContainer({ className }: ChatContainerProps) {
               exit="hidden"
               variants={fadeInUp}
               className="flex items-center gap-2 text-accent text-sm"
+              role="status"
+              aria-label="AI is thinking"
             >
               <Loader size={16} className="text-accent" />
               <Sparkles size={16} />
