@@ -2,3 +2,4 @@
 export * from "./types";
 export { parsePortfolioMarkdown } from "./parsePortfolio";
 export { portfolioContent } from "./data";
+export * from "./config";

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Sequenzia AI is a streaming AI chat application with inline interactive content blocks. The AI can generate forms, charts, code snippets, and cards that render directly within assistant messages.
+Sequenzia AI is a streaming AI chat application functioning as an interactive portfolio showcase. The AI assistant helps visitors explore professional background, experience, projects, and skills through conversation and inline portfolio content blocks.
 
 ## Tech Stack
 
@@ -38,7 +38,6 @@ src/
 │   └── page.tsx               # Main chat page
 ├── components/
 │   ├── ai-elements/           # AI-specific UI components
-│   │   ├── agent-selector.tsx # Agent picker dialog (cmdk-based)
 │   │   ├── code-block.tsx     # Syntax-highlighted code
 │   │   ├── conversation.tsx   # Conversation container
 │   │   ├── loader.tsx         # Loading indicators
@@ -76,21 +75,15 @@ src/
 │   └── Header.tsx             # Theme toggle
 ├── lib/
 │   ├── ai/
-│   │   ├── agents/            # Agent configurations
-│   │   │   ├── agents.shared.ts  # Shared metadata (client-safe)
-│   │   │   ├── default.agent.ts  # Default agent (all tools)
-│   │   │   ├── index.ts          # Registry + getActiveAgent()
-│   │   │   ├── portfolio.agent.ts # Portfolio agent
-│   │   │   └── types.ts          # AgentConfig interface
-│   │   ├── agents.client.ts   # Client-safe agent re-exports
 │   │   ├── models.server.ts   # Server-only AI Gateway factory
 │   │   ├── models.ts          # Client-safe model definitions
-│   │   └── tools.ts           # Tool definitions (form, chart, code, card, portfolio)
+│   │   └── tools.ts           # Tool definition (renderPortfolio)
 │   ├── motion/                # Animation variants + hooks
 │   │   ├── hooks.ts           # Animation hooks
 │   │   ├── index.ts           # Barrel export
 │   │   └── variants.ts        # Framer Motion variants
 │   ├── portfolio/             # Portfolio data system
+│   │   ├── config.ts          # Portfolio configuration (greeting, suggestions, instructions)
 │   │   ├── data.ts            # Portfolio content data
 │   │   ├── index.ts           # Barrel export
 │   │   ├── parsePortfolio.ts  # Portfolio data parser
@@ -104,17 +97,18 @@ src/
 
 ## Key Patterns
 
-### AI SDK v6 Streaming with Agents
+### AI SDK v6 Streaming with Portfolio
 ```typescript
 // API Route (src/app/api/chat/route.ts)
-const agent = getActiveAgent(); // Selected via ACTIVE_AGENT env var
+import { generatePortfolioInstructions, PORTFOLIO_MAX_STEPS } from "@/lib/portfolio/config";
+import { renderPortfolio } from "@/lib/ai/tools";
 
 const result = streamText({
   model: createModel(modelId),
-  system: agent.instructions,
+  system: generatePortfolioInstructions(),
   messages: await convertToModelMessages(uiMessages),
-  tools: agent.tools,
-  stopWhen: stepCountIs(agent.maxSteps ?? 1),
+  tools: { renderPortfolio },
+  stopWhen: stepCountIs(PORTFOLIO_MAX_STEPS),
 });
 return result.toUIMessageStreamResponse({ sendReasoning: true });
 ```
@@ -130,7 +124,6 @@ Custom components for chat UI in `src/components/ai-elements/`:
 - `Message`, `MessageContent`, `MessageResponse` - Message display
 - `MessageAttachment`, `MessageAttachments` - File attachments
 - `MessageBranch`, `MessageBranchSelector` - Response branching
-- `AgentSelector*` - Agent picker with search (cmdk-based)
 - `ModelSelector*` - Model picker with search (cmdk-based)
 - `Suggestion`, `Suggestions` - Quick action buttons
 
@@ -161,58 +154,40 @@ CSS variables in `:root` and `.dark` are referenced in `@theme inline`.
 4. Add case in `ContentBlock.tsx` router
 5. Update tool list in `ChatMessage.tsx`
 
-### Agents
+### Portfolio Configuration
 
-Agents organize system prompts, tools, and suggestions. The default agent is set via `NEXT_PUBLIC_DEFAULT_AGENT_ID`. When `NEXT_PUBLIC_AGENT_SELECTOR_ON=true`, users can switch agents at runtime via the UI.
+The application is hardcoded to function as a portfolio assistant. All portfolio-specific configuration is centralized in `src/lib/portfolio/config.ts`.
 
-**Architecture:**
-- `agents.shared.ts` - Client-safe metadata (id, name, description, greeting, suggestions)
-- `agents.client.ts` - Re-exports shared metadata for client components
-- `*.agent.ts` - Server-only full config with instructions and tools
-
-**AgentMetadata interface (client-safe):**
+**Configuration exports:**
 ```typescript
-interface AgentMetadata {
-  id: string;           // Matches ACTIVE_AGENT env var
-  name: string;         // Human-readable name
-  description?: string; // Optional description
-  greeting?: string;    // Welcome message for empty state
-  suggestions?: Array<{
-    label: string;      // Short label for UI
-    prompt?: string;    // Full prompt (defaults to label)
-  }>;
+// src/lib/portfolio/config.ts
+export const PORTFOLIO_GREETING = "Let's chat — ask me anything about my work, background, or projects.";
+
+export const PORTFOLIO_SUGGESTIONS = [
+  { label: "Bio", prompt: "Show me your bio" },
+  { label: "Experience", prompt: "Show me your experience" },
+  { label: "Projects", prompt: "Show me your projects" },
+  { label: "Education", prompt: "Show me your education" },
+  { label: "Skills", prompt: "Show me your skills" },
+  { label: "Contact", prompt: "Show me your contact information" },
+];
+
+export const PORTFOLIO_MAX_STEPS = 1;
+
+export function generatePortfolioInstructions(): string {
+  // Dynamically generates system prompt with embedded portfolio data from data.ts
 }
 ```
 
-**AgentConfig interface (server-only):**
-```typescript
-interface AgentConfig {
-  id: string;           // Matches ACTIVE_AGENT env var
-  name: string;         // Human-readable name
-  instructions: string; // System prompt
-  tools: ToolSet;       // Available tools
-  maxSteps?: number;    // Multi-step iterations (default: 1)
-  description?: string; // Optional description
-  suggestions?: Array<{
-    label: string;      // Short label for UI
-    prompt?: string;    // Full prompt (defaults to label)
-  }>;
-}
-```
-
-**Adding a new agent:**
-1. Add metadata to `src/lib/ai/agents/agents.shared.ts` (AGENTS array + export)
-2. Create `src/lib/ai/agents/myagent.agent.ts` with full config
-3. Register in `src/lib/ai/agents/index.ts` agents record
-4. Set `NEXT_PUBLIC_DEFAULT_AGENT_ID=myagent` in `.env.local` (or enable agent selector)
-
-**Available agents:**
-- `default` - Full assistant with all tools (form, chart, code, card, web search) and suggestions
-- `portfolio` - Interactive portfolio agent with renderPortfolio tool
+**Customizing the portfolio:**
+1. Edit greeting in `PORTFOLIO_GREETING` constant
+2. Modify suggestion pills in `PORTFOLIO_SUGGESTIONS` array
+3. Update portfolio content in `src/lib/portfolio/data.ts`
+4. System instructions auto-generate from the data in `data.ts`
 
 ### Portfolio System
 
-The portfolio agent uses a data-driven approach to display professional portfolio content.
+The portfolio uses a data-driven approach to display professional content.
 
 **Portfolio data structure (`src/lib/portfolio/types.ts`):**
 ```typescript
@@ -235,9 +210,9 @@ renderPortfolio({
 })
 ```
 
-**Adding portfolio data:**
+**Updating portfolio data:**
 1. Edit `src/lib/portfolio/data.ts` with your content
-2. The portfolio agent's system prompt auto-generates from this data
+2. The system prompt auto-generates from this data via `generatePortfolioInstructions()`
 
 ## Environment Variables
 
@@ -250,9 +225,7 @@ TAVILY_API_KEY=your_tavily_key_here  # For web search (https://tavily.com)
 Optional configuration (via `NEXT_PUBLIC_` prefix for client access):
 ```
 NEXT_PUBLIC_DEFAULT_MODEL_ID=openai/gpt-5-nano   # Default model (defaults to openai/gpt-5-nano)
-NEXT_PUBLIC_DEFAULT_AGENT_ID=default             # Default agent (defaults to default)
 NEXT_PUBLIC_DEBUG_ON=true                        # Enable AI SDK devtools middleware
-NEXT_PUBLIC_AGENT_SELECTOR_ON=true               # Enable runtime agent switching UI
 ```
 
 ## Documentation & Context

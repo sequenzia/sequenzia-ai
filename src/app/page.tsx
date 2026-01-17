@@ -1,18 +1,11 @@
 import { ChatProvider } from "@/components/chat/ChatProvider";
 import { ChatLayout } from "@/components/chat/ChatLayout";
 import { Sidebar, SidebarProvider } from "@/components/sidebar";
-import { getActiveAgent } from "@/lib/ai/agents";
-import { AGENT_SELECTOR_ON } from "@/config";
+import { PORTFOLIO_SUGGESTIONS } from "@/lib/portfolio/config";
 
 export default function Home() {
-  const agent = getActiveAgent();
-
   return (
-    <ChatProvider
-      suggestions={agent.suggestions}
-      initialAgentId={agent.id}
-      agentSelectorEnabled={AGENT_SELECTOR_ON}
-    >
+    <ChatProvider suggestions={PORTFOLIO_SUGGESTIONS}>
       <SidebarProvider>
         <div className="flex h-dvh w-full bg-background">
           <Sidebar />

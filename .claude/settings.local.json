@@ -7,5 +7,9 @@
       "mcp__chrome-devtools",
       "mcp__ai-elements"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "next-devtools"
+  ],
+  "enableAllProjectMcpServers": true
 }

@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { useChat } from './ChatProvider';
 import { InputComposer } from './InputComposer';
 import { Sparkles } from '@/components/ai-elements/sparkles';
-import { getAgentMetadataById } from '@/lib/ai/agents.client';
+import { PORTFOLIO_GREETING } from '@/lib/portfolio/config';
 import { useReducedMotion } from '@/lib/motion/hooks';
 import { staggerContainer, staggerItem } from '@/lib/motion/variants';
 import { cn } from '@/lib/utils';
@@ -63,8 +63,7 @@ function getSuggestionIcon(text: string) {
 }
 
 export function EmptyState() {
-  const { agentId, suggestions, sendMessage } = useChat();
-  const agentMetadata = getAgentMetadataById(agentId);
+  const { suggestions, sendMessage } = useChat();
   const prefersReducedMotion = useReducedMotion();
 
   return (
@@ -94,7 +93,7 @@ export function EmptyState() {
                 Welcome to Sequenzia AI
               </h1>
               <p className="text-muted-foreground text-base md:text-lg max-w-md mx-auto">
-                {agentMetadata?.greeting ?? 'Ask me anything!'}
+                {PORTFOLIO_GREETING}
               </p>
             </motion.div>
 
@@ -108,7 +107,6 @@ export function EmptyState() {
           {/* Suggestion grid - below input (desktop only) */}
           {suggestions && suggestions.length > 0 && (
             <motion.nav
-              key={`suggestions-desktop-${agentId}`}
               variants={prefersReducedMotion ? undefined : staggerContainer}
               initial="hidden"
               animate="visible"
@@ -147,7 +145,6 @@ export function EmptyState() {
         {/* Mobile suggestion grid */}
         {suggestions && suggestions.length > 0 && (
           <motion.nav
-            key={`suggestions-mobile-${agentId}`}
             variants={prefersReducedMotion ? undefined : staggerContainer}
             initial="hidden"
             animate="visible"

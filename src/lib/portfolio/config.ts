@@ -1,10 +1,41 @@
-import type { AgentConfig } from "./types";
-import { renderPortfolio } from "../tools";
-import { portfolioContent } from "@/lib/portfolio";
-import { portfolioAgentMeta } from "./agents.shared";
+import { portfolioContent } from "./data";
 
-// Generate dynamic system prompt with embedded portfolio data
-function generatePortfolioInstructions(): string {
+export const PORTFOLIO_GREETING =
+  "Let's chat — ask me anything about my work, background, or projects.";
+
+export const PORTFOLIO_SUGGESTIONS = [
+  {
+    label: "Bio",
+    prompt: "Show me your bio",
+  },
+  {
+    label: "Experience",
+    prompt: "Show me your experience",
+  },
+  {
+    label: "Projects",
+    prompt: "Show me your projects",
+  },
+  {
+    label: "Education",
+    prompt: "Show me your education",
+  },
+  {
+    label: "Skills",
+    prompt: "Show me your skills",
+  },
+  {
+    label: "Contact",
+    prompt: "Show me your contact information",
+  },
+];
+
+export const PORTFOLIO_MAX_STEPS = 1;
+
+/**
+ * Generate dynamic system prompt with embedded portfolio data
+ */
+export function generatePortfolioInstructions(): string {
   const { bio, experience, projects, education, skills, contact } =
     portfolioContent;
 
@@ -99,15 +130,3 @@ Do NOT use renderPortfolio for:
 3. Suggest exploration after answering (e.g., "Would you like to see my projects in this area?")
 4. For contact requests, use renderPortfolio to show the contact section`;
 }
-
-export const portfolioAgent: AgentConfig = {
-  ...portfolioAgentMeta,
-
-  instructions: generatePortfolioInstructions(),
-
-  tools: {
-    renderPortfolio,
-  },
-
-  maxSteps: 1,
-};
