@@ -71,7 +71,7 @@ export function InputComposer({ hideSuggestions, compact }: InputComposerProps =
 
   return (
     <div className="p-4 pb-8 pb-[calc(2rem+var(--safe-area-inset-bottom))]">
-      <div className={compact ? "max-w-2xl lg:max-w-3xl mx-auto" : "max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto"}>
+      <div className={compact ? "max-w-xl lg:max-w-2xl mx-auto" : "max-w-lg lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl mx-auto"}>
         {/* Glassmorphism container */}
         <div className="relative group pointer-events-auto">
           {/* Glassmorphism background layer with backdrop blur */}
