@@ -23,6 +23,7 @@ import { Sun, Moon, Monitor } from "lucide-react";
 import { useChat } from "./chat/ChatProvider";
 import { Sparkles } from "./ai-elements/sparkles";
 import { cn } from "@/lib/utils";
+import { SITE_NAME } from "@/config";
 import type { Theme } from "@/types";
 
 export function Header() {
@@ -50,7 +51,7 @@ export function Header() {
               <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <Sparkles size={36} />
                 <span className="font-semibold text-2xl bg-gradient-to-r from-gradient-from to-gradient-to bg-clip-text text-transparent">
-                  Sequenzia AI
+                  {SITE_NAME}
                 </span>
               </button>
             </AlertDialogTrigger>

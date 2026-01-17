@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { SITE_NAME, SITE_DESCRIPTION } from "@/config";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sequenzia AI",
-  description: "AI-powered chat with interactive content blocks",
+  title: SITE_NAME,
+  description: SITE_DESCRIPTION,
 };
 
 export const viewport: Viewport = {

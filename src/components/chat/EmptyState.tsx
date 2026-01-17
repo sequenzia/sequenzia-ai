@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { useChat } from './ChatProvider';
 import { InputComposer } from './InputComposer';
 import { PORTFOLIO_GREETING } from '@/lib/portfolio/config';
+import { SITE_NAME } from '@/config';
 import { useReducedMotion } from '@/lib/motion/hooks';
 import { staggerContainer, staggerItem } from '@/lib/motion/variants';
 import { cn } from '@/lib/utils';
@@ -79,7 +80,7 @@ export function EmptyState() {
               className="space-y-2"
             >
               <h1 className="text-2xl md:text-3xl font-semibold bg-gradient-to-r from-accent via-primary to-accent bg-clip-text text-transparent">
-                Welcome to Sequenzia AI
+                Welcome to {SITE_NAME}
               </h1>
               <p className="text-muted-foreground text-base md:text-lg max-w-md mx-auto">
                 {PORTFOLIO_GREETING}
