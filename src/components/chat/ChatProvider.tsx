@@ -10,8 +10,7 @@ import {
 import { useChat as useAIChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import type { UIMessage, ChatStatus } from "ai";
-import { DEFAULT_MODEL_ID, DEFAULT_AGENT_ID } from "@/config";
-import { getAgentMetadataById } from "@/lib/ai/agents.client";
+import { DEFAULT_MODEL_ID } from "@/config";
 
 interface ChatContextValue {
   messages: UIMessage[];
@@ -24,11 +23,6 @@ interface ChatContextValue {
   stop: () => void;
   modelId: string;
   setModelId: (modelId: string) => void;
-  agentId: string;
-  setAgentId: (agentId: string) => void;
-  agentSelectorEnabled: boolean;
-  agentSelectorOpen: boolean;
-  setAgentSelectorOpen: (open: boolean) => void;
   suggestions?: Array<{ label: string; prompt?: string }>;
 }
 
@@ -37,30 +31,13 @@ const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 interface ChatProviderProps {
   children: React.ReactNode;
   suggestions?: Array<{ label: string; prompt?: string }>;
-  initialAgentId?: string;
-  agentSelectorEnabled?: boolean;
 }
 
 export function ChatProvider({
   children,
-  suggestions: initialSuggestions,
-  initialAgentId,
-  agentSelectorEnabled = false,
+  suggestions,
 }: ChatProviderProps) {
   const [modelId, setModelId] = useState<string>(DEFAULT_MODEL_ID);
-  const [agentId, setAgentId] = useState<string>(
-    initialAgentId ?? DEFAULT_AGENT_ID
-  );
-  const [agentSelectorOpen, setAgentSelectorOpen] = useState(false);
-
-  // Derive suggestions from selected agent when selector is enabled
-  const suggestions = useMemo(() => {
-    if (agentSelectorEnabled) {
-      const agentMeta = getAgentMetadataById(agentId);
-      return agentMeta?.suggestions ?? [];
-    }
-    return initialSuggestions;
-  }, [agentSelectorEnabled, agentId, initialSuggestions]);
 
   const {
     messages,
@@ -79,9 +56,9 @@ export function ChatProvider({
 
   const sendMessage = useCallback(
     (content: string) => {
-      aiSendMessage({ text: content }, { body: { modelId, agentId } });
+      aiSendMessage({ text: content }, { body: { modelId } });
     },
-    [aiSendMessage, modelId, agentId]
+    [aiSendMessage, modelId]
   );
 
   const regenerateLastMessage = useCallback(() => {
@@ -97,11 +74,11 @@ export function ChatProvider({
       if (textPart) {
         setMessages(messages.slice(0, index));
         setTimeout(() => {
-          aiSendMessage({ text: textPart.text }, { body: { modelId, agentId } });
+          aiSendMessage({ text: textPart.text }, { body: { modelId } });
         }, 100);
       }
     }
-  }, [messages, setMessages, aiSendMessage, modelId, agentId]);
+  }, [messages, setMessages, aiSendMessage, modelId]);
 
   const clearMessages = useCallback(() => {
     setMessages([]);
@@ -119,11 +96,6 @@ export function ChatProvider({
       stop,
       modelId,
       setModelId,
-      agentId,
-      setAgentId,
-      agentSelectorEnabled,
-      agentSelectorOpen,
-      setAgentSelectorOpen,
       suggestions,
     }),
     [
@@ -136,9 +108,6 @@ export function ChatProvider({
       clearMessages,
       stop,
       modelId,
-      agentId,
-      agentSelectorEnabled,
-      agentSelectorOpen,
       suggestions,
     ]
   );
