@@ -191,13 +191,19 @@ body {
   }
 }
 
-/* Touch optimization */
+/* Touch optimization and cursor */
 button,
 a,
 input,
 textarea,
 [role="button"] {
   touch-action: manipulation;
+  cursor: pointer;
+}
+
+input,
+textarea {
+  cursor: text;
 }
 
 /* Focus ring utilities */
