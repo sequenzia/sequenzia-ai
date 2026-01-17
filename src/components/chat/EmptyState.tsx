@@ -3,7 +3,6 @@
 import { motion } from 'motion/react';
 import { useChat } from './ChatProvider';
 import { InputComposer } from './InputComposer';
-import { Sparkles } from '@/components/ai-elements/sparkles';
 import { PORTFOLIO_GREETING } from '@/lib/portfolio/config';
 import { useReducedMotion } from '@/lib/motion/hooks';
 import { staggerContainer, staggerItem } from '@/lib/motion/variants';
@@ -73,16 +72,6 @@ export function EmptyState() {
         <div className="w-full max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl">
           {/* Empty state content */}
           <div className="flex flex-col items-center gap-4 text-center welcome-landscape-hide">
-            {/* Hero icon with container */}
-            <motion.div
-              initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="size-16 bg-primary rounded-[24px] flex items-center justify-center shadow-xl"
-            >
-              <Sparkles size={32} className="text-primary-foreground" />
-            </motion.div>
-
             <motion.div
               initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
