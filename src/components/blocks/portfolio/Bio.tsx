@@ -2,7 +2,6 @@
 
 import { motion } from "motion/react";
 import { portfolioContent } from "@/lib/portfolio";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface BioProps {
   filter?: string;
@@ -13,57 +12,60 @@ export function Bio(_props: BioProps) {
 
   return (
     <div className="space-y-4">
-      {/* Main bio card */}
+      {/* Main bio section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
+        className="flex flex-col sm:flex-row gap-4"
       >
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex flex-col sm:flex-row gap-4">
-              {/* Avatar */}
-              <div className="flex-shrink-0">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-2xl font-bold">
-                  {bio.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </div>
-              </div>
-
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <h3 className="text-xl font-bold text-foreground">{bio.name}</h3>
-                <p className="text-primary font-medium mt-0.5">{bio.title}</p>
-                <p className="text-muted-foreground text-sm mt-0.5 flex items-center gap-1">
-                  <LocationIcon className="w-4 h-4" />
-                  {bio.location}
-                </p>
-
-                <p className="text-foreground/80 mt-3 text-sm leading-relaxed">
-                  {bio.summary}
-                </p>
-
-                {/* Social links */}
-                <div className="flex gap-3 mt-3">
-                  {bio.socialLinks.map((link) => (
-                    <a
-                      key={link.platform}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                      title={link.platform}
-                    >
-                      <SocialIcon icon={link.icon} className="w-5 h-5" />
-                    </a>
-                  ))}
-                </div>
-              </div>
+        {/* Avatar */}
+        <div className="flex-shrink-0">
+          {bio.photoUrl ? (
+            <img
+              src={bio.photoUrl}
+              alt={bio.name}
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover"
+            />
+          ) : (
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-2xl font-bold">
+              {bio.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")}
             </div>
-          </CardContent>
-        </Card>
+          )}
+        </div>
+
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-xl font-bold text-foreground">{bio.name}</h3>
+          <p className="text-primary font-medium mt-0.5">{bio.title}</p>
+          <p className="text-muted-foreground text-sm mt-0.5 flex items-center gap-1">
+            <LocationIcon className="w-4 h-4" />
+            {bio.location}
+          </p>
+
+          <p className="text-foreground/80 mt-3 text-sm leading-relaxed">
+            {bio.summary}
+          </p>
+
+          {/* Social links */}
+          <div className="flex gap-3 mt-3">
+            {bio.socialLinks.map((link) => (
+              <a
+                key={link.platform}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                title={link.platform}
+              >
+                <SocialIcon icon={link.icon} className="w-5 h-5" />
+              </a>
+            ))}
+          </div>
+        </div>
       </motion.div>
 
       {/* Highlights */}

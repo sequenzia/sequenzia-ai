@@ -37,6 +37,15 @@ export function PortfolioBlock({ data }: PortfolioBlockProps) {
     }
   };
 
+  // Bio view renders without header for cleaner presentation
+  if (data.viewType === "bio") {
+    return (
+      <Card className="overflow-hidden">
+        <CardContent className="pt-4">{renderView()}</CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-2">
